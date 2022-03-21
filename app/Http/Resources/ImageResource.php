@@ -18,7 +18,6 @@ class ImageResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'ID' => $this->id,
             'image' => 'data:image/png;base64,' . base64_encode($this->image),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
