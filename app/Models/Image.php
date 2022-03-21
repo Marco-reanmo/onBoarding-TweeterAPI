@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Image extends Model
 {
@@ -12,9 +12,9 @@ class Image extends Model
 
     protected $fillable = ['image'];
 
-    public function user(): BelongsTo
+    public function user(): HasOne
     {
-        return $this->belongsTo('user');
+        return $this->hasOne(User::class);
     }
 
 }
