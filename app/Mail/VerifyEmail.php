@@ -2,7 +2,6 @@
 
 namespace App\Mail;
 
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -12,15 +11,20 @@ class VerifyEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    private String $username;
+
     private String $verificationString;
+
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(String $randomString)
+    public function __construct(String $username, String $randomString)
     {
         $this->verificationString = $randomString;
+        $this->username = $username;
     }
 
     /**
@@ -34,7 +38,7 @@ class VerifyEmail extends Mailable
             ->subject('Verify your Tweeter Account')
             ->markdown('mails.verifcation')
             ->with([
-                'name' => 'Subscriber',
+                'name' => $this->username,
                 'link' => 'http://localhost:8000/api/users/'. $this->verificationString .'/verify'
             ]);
     }

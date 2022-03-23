@@ -21,7 +21,7 @@ class Verification {
         $attributes['user_ID'] = $this->user->getAttribute('id');
         $attributes['token'] = $randomString;
         VerificationToken::query()->create($attributes);
-        Mail::to($this->user->getAttribute('email'))->send(new VerifyEmail($randomString));
+        Mail::to($this->user->getAttribute('email'))->send(new VerifyEmail($this->user->getAttribute('forename'), $randomString));
     }
 
 }
