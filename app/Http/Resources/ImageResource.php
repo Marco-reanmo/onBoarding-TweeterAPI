@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class ImageResource extends JsonResource
 {
@@ -17,8 +18,10 @@ class ImageResource extends JsonResource
      */
     public function toArray($request)
     {
+        $path = 'image' . $this->id . '.png';
+        Storage::put($path, $this->image);
         return [
-            'image' => 'data:image/png;base64,' . base64_encode($this->image),
+            'image_link' => Storage::url($path),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
