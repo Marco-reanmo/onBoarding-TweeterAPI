@@ -30,6 +30,6 @@ class SessionController extends Controller
 
     public function destroy() {
         auth()->logout();
-        return response()->json('Logged out.', Response::HTTP_OK);
+        return response()->json('Logged out.', Response::HTTP_NO_CONTENT);
     }
 }
