@@ -21,12 +21,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/users/login', [SessionController::class, 'store']);
-Route::post('/users/logout', [SessionController::class, 'destroy']);
+Route::controller(SessionController::class)->group(function() {
+    Route::post('/users/login', 'store');
+    Route::post('/users/logout', 'destroy');
+});
 
-Route::post('/users/register', [UserController::class, 'store']);
+Route::controller(UserController::class)->group(function () {
+    Route::get('/users', 'index');
+    Route::post('/users/register', 'store');
+});
 
-Route::get('/users', [UserController::class, 'index']);
-
-Route::get('/users/verify', [VerificationController::class, 'index']);
-Route::put('/users/{verification_token:token}/verify', [VerificationController::class, 'update']);
+Route::controller(VerificationController::class)->group(function () {
+    Route::put('/users/{verification_token:token}/verify', 'update');
+});

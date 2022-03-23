@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Image;
 use App\Models\User;
@@ -17,19 +18,13 @@ class UserController extends Controller
         return UserResource::collection(User::with('profile_picture')->get());
     }
 
-    public function store() {
-        $attributes = request()->validate([
-            'forename' => ['required', 'min:3', 'max:255', 'alpha'],
-            'surname' => ['required', 'min:3', 'max:255', 'alpha'],
-            'profile_picture' => ['image'],
-            'email' => ['required', 'max:255', 'email', Rule::unique('users', 'email')],
-            'password' => ['confirmed', Password::defaults()],
-        ]);
+    public function store(RegisterRequest $request) {
+        $attributes = $request->validated();
 
         $attributes['password'] = bcrypt($attributes['password']);
 
-        if((request()->file('profile_picture'))) {
-            $image['image'] = file_get_contents((request()->file('profile_picture')->getPathname()));
+        if(($request->hasFile('profile_picture'))) {
+            $image['image'] = file_get_contents(($request->file('profile_picture')->getPathname()));
             $attributes['img_ID'] = Image::query()->create($image)->id;
         }
 
@@ -37,8 +32,6 @@ class UserController extends Controller
 
         $service = new Verification($user);
         $service->sendTokenToUserEmail();
-
-        //session()->regenerate();
 
         auth()->login($user);
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,11 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SessionController extends Controller
 {
-    public function store() {
-        $attributes = request()->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required']
-        ]);
+    public function store(LoginRequest $request) {
+        $attributes = $request->validated();
 
         if(!auth()->attempt($attributes)) {
            /* throw ValidationException::withMessages([
