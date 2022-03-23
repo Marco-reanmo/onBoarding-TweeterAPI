@@ -27,4 +27,13 @@ class UserResource extends JsonResource
         ];
     }
 
+    public function with($request)
+    {
+        return [
+            'links' => [
+                'show' => '/users/' . $this->id,
+                'follow' => '/users/' . $this->id . '/follow'
+            ]
+        ];
+    }
 }
