@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
@@ -23,9 +25,8 @@ use Illuminate\Support\Facades\Route;
 | PUBLIC
 |--------------------------------------------------------------------------
  */
-Route::controller(SessionController::class)->group(function() {
+Route::controller(LoginController::class)->group(function() {
     Route::post('/login', 'store');
-    Route::post('/logout', 'destroy');
 });
 
 Route::controller(RegisterController::class)->group(function () {
@@ -44,6 +45,9 @@ Route::controller(VerificationController::class)->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'index');
+    });
+    Route::controller(LogoutController::class)->group(function() {
+        Route::post('/logout', 'destroy');
     });
 });
 
