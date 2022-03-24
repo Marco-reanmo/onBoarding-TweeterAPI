@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
@@ -17,21 +18,33 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::controller(UserController::class)->group(function () {
-        Route::get('/users', 'index');
-        Route::post('/users/register', 'store');
-    });
-});
-
-
+/*
+|--------------------------------------------------------------------------
+| PUBLIC
+|--------------------------------------------------------------------------
+ */
 Route::controller(SessionController::class)->group(function() {
-    Route::get('/users/login', 'index')->name('login');
-    Route::post('/users/login', 'store');
-    Route::post('/users/logout', 'destroy');
+    Route::post('/login', 'store');
+    Route::post('/logout', 'destroy');
 });
 
+Route::controller(RegisterController::class)->group(function () {
+    Route::post('/register', 'store');
+});
 
 Route::controller(VerificationController::class)->group(function () {
     Route::put('/users/{verification_token:token}/verify', 'update');
 });
+
+/*
+|--------------------------------------------------------------------------
+| PRIVATE
+|--------------------------------------------------------------------------
+ */
+Route::middleware('auth:sanctum')->group(function () {
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/users', 'index');
+    });
+});
+
+
