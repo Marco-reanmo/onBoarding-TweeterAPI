@@ -25,17 +25,9 @@ use Illuminate\Support\Facades\Route;
 | PUBLIC
 |--------------------------------------------------------------------------
  */
-Route::controller(LoginController::class)->group(function() {
-    Route::post('/login', 'store');
-});
-
-Route::controller(RegisterController::class)->group(function () {
-    Route::post('/register', 'store');
-});
-
-Route::controller(VerificationController::class)->group(function () {
-    Route::put('/users/{verification_token:token}/verify', 'update');
-});
+Route::post('/login', [LoginController::class, 'store']);
+Route::post('/register', [RegisterController::class, 'store']);
+Route::put('/users/{verification_token:token}/verify', [VerificationController::class, 'update']);
 
 /*
 |--------------------------------------------------------------------------
@@ -44,9 +36,7 @@ Route::controller(VerificationController::class)->group(function () {
  */
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('user', UserController::class);
-    Route::controller(LogoutController::class)->group(function() {
-        Route::post('/logout', 'destroy');
-    });
+    Route::post('/logout', [LogoutController::class, 'destroy']);
 });
 
 
