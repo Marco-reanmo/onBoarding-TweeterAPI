@@ -43,9 +43,7 @@ Route::controller(VerificationController::class)->group(function () {
 |--------------------------------------------------------------------------
  */
 Route::middleware('auth:sanctum')->group(function () {
-    Route::controller(UserController::class)->group(function () {
-        Route::get('/users', 'index');
-    });
+    Route::apiResource('user', UserController::class);
     Route::controller(LogoutController::class)->group(function() {
         Route::post('/logout', 'destroy');
     });
