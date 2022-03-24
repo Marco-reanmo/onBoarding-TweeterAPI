@@ -30,8 +30,8 @@ class UserController extends Controller
 
         $user = User::query()->create($attributes);
 
-        $service = new Verification($user);
-        $service->sendTokenToUserEmail();
+        $service = new Verification();
+        $service->sendTokenToUserEmail($user);
 
         auth()->login($user);
 

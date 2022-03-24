@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\VerificationToken;
+use App\Services\Verification;
 use Symfony\Component\HttpFoundation\Response;
 
 class VerificationController extends Controller
@@ -14,10 +15,9 @@ class VerificationController extends Controller
         if (!$token) {
             return response()->json('', Response::HTTP_NOT_FOUND);
         }
+        $service = new Verification();
+        $success = $service->verify($token->getAttribute('user_ID'));
 
-        $success = User::query()
-            ->firstWhere('id', '=', $token->getAttribute('user_ID'))
-            ->update(['email_verified_at' => now()->toDateTimeString()]);
         if (!$success) {
             return response()->json('Update failed', Response::HTTP_INTERNAL_SERVER_ERROR);
         }

@@ -10,18 +10,18 @@ use Illuminate\Support\Str;
 
 class Verification {
 
-    private User $user;
-
-    public function __construct(User $user) {
-        $this->user = $user;
-    }
-
-    public function sendTokenToUserEmail() {
+    public function sendTokenToUserEmail(User $user) {
         $randomString = Str::random(64);
-        $attributes['user_ID'] = $this->user->getAttribute('id');
+        $attributes['user_ID'] = $user->getAttribute('id');
         $attributes['token'] = $randomString;
         VerificationToken::query()->create($attributes);
-        Mail::to($this->user->getAttribute('email'))->send(new VerifyEmail($this->user->getAttribute('forename'), $randomString));
+        Mail::to($user->getAttribute('email'))->send(new VerifyEmail($user->getAttribute('forename'), $randomString));
     }
 
+    public function verify($userId): bool|int
+    {
+        return User::query()
+            ->firstWhere('id', '=', $userId)
+            ->update(['email_verified_at' => now()->toDateTimeString()]);
+    }
 }
