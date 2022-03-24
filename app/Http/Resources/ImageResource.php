@@ -18,7 +18,7 @@ class ImageResource extends JsonResource
      */
     public function toArray($request)
     {
-        $path = 'public/image' . $this->id . '.png';
+        $path = 'public/images/image' . $this->id . '.png';
         Storage::put($path, $this->image);
         return [
             'image_link' => Storage::url($path),
