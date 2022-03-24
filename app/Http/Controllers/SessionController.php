@@ -11,6 +11,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SessionController extends Controller
 {
+    public function index() {
+        return \response('Login', Response::HTTP_OK);
+    }
+
     public function store(LoginRequest $request) {
         $attributes = $request->validated();
 
@@ -23,7 +27,14 @@ class SessionController extends Controller
 
         session()->regenerate();
         $user = User::query()->firstWhere('email', '=', $attributes['email']);
-        return response()->json(compact('user'), Response::HTTP_OK);
+        $token = $user->createToken('authenticationToken')->plainTextToken;
+
+        $response = [
+          'user' => UserResource::make($user),
+          'token' => $token
+        ];
+
+        return response()->json($response, Response::HTTP_OK);
     }
 
     public function destroy() {

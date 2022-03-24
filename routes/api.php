@@ -17,19 +17,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/users', 'index');
+        Route::post('/users/register', 'store');
+    });
 });
 
+
 Route::controller(SessionController::class)->group(function() {
+    Route::get('/users/login', 'index')->name('login');
     Route::post('/users/login', 'store');
     Route::post('/users/logout', 'destroy');
 });
 
-Route::controller(UserController::class)->group(function () {
-    Route::get('/users', 'index');
-    Route::post('/users/register', 'store');
-});
 
 Route::controller(VerificationController::class)->group(function () {
     Route::put('/users/{verification_token:token}/verify', 'update');
