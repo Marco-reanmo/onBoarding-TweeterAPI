@@ -7,9 +7,6 @@ use App\Http\Resources\UserResource;
 use App\Models\Image;
 use App\Models\User;
 use App\Services\Verification;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Password;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
