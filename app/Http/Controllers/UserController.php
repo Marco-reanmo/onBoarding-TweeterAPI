@@ -12,7 +12,7 @@ class UserController extends Controller
         $allUsers = UserResource::collection(User::with('profile_picture')->get());
         foreach ($allUsers as $user) {
             $user['links'] = [
-                'show' => 'users/' . $user->getAttribute('uuid'),
+                'profile' => 'users/' . $user->getAttribute('uuid'),
                 'follow' => 'users/' . $user->getAttribute('uuid') . '/follow',
             ];
         }
