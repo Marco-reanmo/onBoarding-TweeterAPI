@@ -32,7 +32,7 @@ class RegisterController extends Controller
         $userRes = UserResource::make($user);
 
         $response = [
-            $userRes,
+            'user' => $userRes,
             'token' => $token
         ];
 
