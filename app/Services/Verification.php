@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Resources\UserResource;
 use App\Mail\VerifyEmail;
 use App\Models\User;
 use App\Models\VerificationToken;
@@ -18,13 +19,16 @@ class Verification {
         Mail::to($user->getAttribute('email'))->send(new VerifyEmail($user->getAttribute('forename'), $randomString));
     }
 
-    public function verify($userId): bool|int
+    public function verify(VerificationToken $verificationToken): bool | UserResource
     {
-        VerificationToken::query()
-            ->firstWhere('user_ID', '=', $userId)
-            ->delete();
-        return User::query()
-            ->firstWhere('id', '=', $userId)
-            ->update(['email_verified_at' => now()->toDateTimeString()]);
+        $userId = $verificationToken->getAttribute('user_ID');
+        $user = User::query()
+            ->firstWhere('id', '=', $userId);
+        $success = $user->update(['email_verified_at' => now()->toDateTimeString()]);
+        if(!$success) {
+            return false;
+        }
+        $verificationToken->delete();
+        return UserResource::make($user);
     }
 }
