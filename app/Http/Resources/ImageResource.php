@@ -22,8 +22,6 @@ class ImageResource extends JsonResource
         Storage::put($path, $this->image);
         return [
             'image_link' => Storage::url($path),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
         ];
     }
 }
