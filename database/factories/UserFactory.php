@@ -19,6 +19,7 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
+            'uuid' => $this->faker->uuid(),
             'img_ID' => 1,
             'forename' => $this->faker->firstName(),
             'surname' => $this->faker->lastName(),
