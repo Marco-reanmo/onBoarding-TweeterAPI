@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Resources\UserResource;
+use App\Jobs\SendVerificationEmail;
 use App\Mail\VerifyEmail;
 use App\Models\User;
 use App\Models\VerificationToken;
@@ -16,7 +17,7 @@ class Verification {
         $attributes['user_ID'] = $user->getAttribute('id');
         $attributes['token'] = $randomString;
         VerificationToken::query()->create($attributes);
-        Mail::to($user->getAttribute('email'))->send(new VerifyEmail($user->getAttribute('forename'), $randomString));
+        SendVerificationEmail::dispatch($user, $randomString);
     }
 
     public function verify(VerificationToken $verificationToken): bool | UserResource
