@@ -20,6 +20,9 @@ class Verification {
 
     public function verify($userId): bool|int
     {
+        VerificationToken::query()
+            ->firstWhere('user_ID', '=', $userId)
+            ->delete();
         return User::query()
             ->firstWhere('id', '=', $userId)
             ->update(['email_verified_at' => now()->toDateTimeString()]);
