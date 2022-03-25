@@ -19,17 +19,18 @@ class UserController extends Controller
         return $allUsers;
     }
 
-    public function store() {
-        return \response([], Response::HTTP_NO_CONTENT);
-    }
-
     public function show(User $user) {
         $user = UserResource::make($user);
         $links = [
-            'show' => '/users/' . $user->getAttribute('uuid'),
+            'profile' => '/users/' . $user->getAttribute('uuid'),
             'follow' => '/users/' . $user->getAttribute('uuid') . '/follow'
         ];
         $user['links'] = $links;
         return $user;
     }
+
+    public function store() {
+        return \response([], Response::HTTP_NO_CONTENT);
+    }
+
 }
