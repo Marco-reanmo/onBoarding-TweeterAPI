@@ -3,7 +3,6 @@
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
 use Illuminate\Http\Request;
@@ -35,7 +34,7 @@ Route::put('/verify/{verification_token:token}', [VerificationController::class,
 |--------------------------------------------------------------------------
  */
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('user', UserController::class);
+    Route::apiResource('users', UserController::class);
     Route::post('/logout', [LogoutController::class, 'destroy']);
 });
 
