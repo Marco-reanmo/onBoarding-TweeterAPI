@@ -20,7 +20,7 @@ class LoginController extends Controller
         }
 
         session()->regenerate();
-        $user = User::query()->firstWhere('email', '=', $attributes['email']);
+        $user = auth()->user();
         $token = $user->createToken('authenticationToken')->plainTextToken;
 
         $response = [
