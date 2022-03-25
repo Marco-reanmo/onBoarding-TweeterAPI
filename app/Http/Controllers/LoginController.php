@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;
-use App\Models\User;
 use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
@@ -13,9 +12,6 @@ class LoginController extends Controller
         $attributes = $request->validated();
 
         if(!auth()->attempt($attributes)) {
-            /* throw ValidationException::withMessages([
-                 'email' => ['Your provided credentials could not be verified.']
-             ]);*/
             return response()->json([], Response::HTTP_FORBIDDEN);
         }
 
