@@ -19,7 +19,8 @@ class UserController extends Controller
     }
 
     public function show(User $user) {
-        $userResource = UserResource::make($user->load('profile_picture'));
+        $menuLinks = $this->getMenuLinks(auth()->user());
+        $userResource = UserResource::make($user->load('profile_picture'))->additional(['links' => $menuLinks]);
         $userResource['links'] = $this->getLinks($user);
         return $userResource->response()->setStatusCode(Response::HTTP_OK);
     }
