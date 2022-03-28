@@ -9,28 +9,34 @@ use Symfony\Component\HttpFoundation\Response;
 class UserController extends Controller
 {
     public function index() {
-        $allUsers = UserResource::collection(User::with('profile_picture')->get());
-        foreach ($allUsers as $user) {
-            $user['links'] = [
-                'profile' => 'users/' . $user->getAttribute('uuid'),
-                'follow' => 'users/' . $user->getAttribute('uuid') . '/follow',
-            ];
+        $users = User::with('profile_picture')->get();
+        foreach ($users as $user) {
+            $user['links'] = $this->getLinks($user);
         }
-        return $allUsers;
+        $menuLinks = $this->getMenuLinks(auth()->user());
+        $usersCollection = UserResource::collection($users)->additional(['links' => $menuLinks]);
+        return $usersCollection->response()->setStatusCode(Response::HTTP_OK);
     }
 
     public function show(User $user) {
-        $user = UserResource::make($user);
-        $links = [
-            'profile' => '/users/' . $user->getAttribute('uuid'),
-            'follow' => '/users/' . $user->getAttribute('uuid') . '/follow'
-        ];
-        $user['links'] = $links;
-        return $user;
+        $userResource = UserResource::make($user->load('profile_picture'));
+        $userResource['links'] = $this->getLinks($user);
+        return $userResource->response()->setStatusCode(Response::HTTP_OK);
     }
 
-    public function store() {
-        return \response([], Response::HTTP_NO_CONTENT);
+    private function getLinks(User $user) {
+        return [
+            'profile' => 'users/' . $user->getAttribute('uuid'),
+            'follow' => 'users/' . $user->getAttribute('uuid') . '/follow',
+        ];
+    }
+
+    private function getMenuLinks(User $user) {
+        return [
+            'home' => 'api/tweets',
+            'myTweets' => 'api/tweets?user=' . $user->getAttribute('uuid'),
+            'settings' => 'api/users/' . $user->getAttribute('uuid')
+        ];
     }
 
 }
