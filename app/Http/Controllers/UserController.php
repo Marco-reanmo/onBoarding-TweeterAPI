@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Image;
 use App\Models\User;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,6 +25,26 @@ class UserController extends Controller
         $userResource = UserResource::make($user->load('profile_picture'))->additional(['links' => $menuLinks]);
         $userResource['links'] = $this->getLinks($user);
         return $userResource->response()->setStatusCode(Response::HTTP_OK);
+    }
+
+    public function update(UpdateUserRequest $request, User $user) {
+        $attributes = $request->validated();
+        unset($attributes['old_password']);
+        $attributes['password'] = bcrypt($attributes['password']);
+        if($request->hasFile('profile_picture')) {
+            $data['image'] = file_get_contents($request->file('profile_picture')->getPathname());
+            $image = Image::query()->find($user['img_ID']);
+            if (is_null($image)) {
+                $image = Image::query()->create($data);
+            } else {
+                $image->update($data);
+            }
+            $attributes['img_ID'] = $image->getAttribute('id');
+        }
+        $user->update($attributes);
+        $menuLinks = $this->getMenuLinks($user);
+        $userResource = UserResource::make($user->load('profile_picture'))->additional(['links' => $menuLinks]);
+        return $userResource->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     private function getLinks(User $user) {

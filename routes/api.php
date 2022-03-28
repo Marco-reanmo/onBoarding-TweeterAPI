@@ -34,6 +34,8 @@ Route::put('/verify/{verification_token:token}', [VerificationController::class,
 |--------------------------------------------------------------------------
  */
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('users', UserController::class)->except('store');
+    Route::apiResource('users', UserController::class)
+        ->except('store')
+        ->middleware('can:update,user');
     Route::post('/logout', [LogoutController::class, 'destroy']);
 });
