@@ -10,8 +10,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(User::class, 'user');
+    }
+
     public function index() {
-        $this->authorize('viewAny', User::class);
         $users = User::with('profile_picture')->get();
         foreach ($users as $user) {
             $user['links'] = $this->getLinks($user);
@@ -22,7 +26,6 @@ class UserController extends Controller
     }
 
     public function show(User $user) {
-        $this->authorize('view', $user);
         $menuLinks = $this->getMenuLinks(auth()->user());
         $userResource = UserResource::make($user->load('profile_picture'))->additional(['links' => $menuLinks]);
         $userResource['links'] = $this->getLinks($user);
@@ -30,7 +33,6 @@ class UserController extends Controller
     }
 
     public function update(UpdateUserRequest $request, User $user) {
-        $this->authorize('update', $user);
         $attributes = $request->validated();
         unset($attributes['old_password']);
         $attributes['password'] = bcrypt($attributes['password']);
