@@ -21,6 +21,7 @@ class UserController extends Controller
     }
 
     public function show(User $user) {
+        $this->authorize('view', $user);
         $menuLinks = $this->getMenuLinks(auth()->user());
         $userResource = UserResource::make($user->load('profile_picture'))->additional(['links' => $menuLinks]);
         $userResource['links'] = $this->getLinks($user);
@@ -28,18 +29,20 @@ class UserController extends Controller
     }
 
     public function update(UpdateUserRequest $request, User $user) {
+        $this->authorize('update', $user);
         $attributes = $request->validated();
         unset($attributes['old_password']);
         $attributes['password'] = bcrypt($attributes['password']);
         if($request->hasFile('profile_picture')) {
             $data['image'] = file_get_contents($request->file('profile_picture')->getPathname());
-            $image = Image::query()->find($user['img_ID']);
-            if (is_null($image)) {
-                $image = Image::query()->create($data);
+            if ($user->hasProfilePicture()) {
+                Image::query()
+                    ->firstWhere(['id' => $user->getAttribute('img_ID')])
+                    ->update($data);
             } else {
-                $image->update($data);
+                $newId = Image::query()->create($data)->id;
+                $attributes['img_ID'] = $newId;
             }
-            $attributes['img_ID'] = $image->getAttribute('id');
         }
         $user->update($attributes);
         $menuLinks = $this->getMenuLinks($user);

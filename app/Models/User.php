@@ -61,4 +61,9 @@ class User extends Authenticatable
     {
         return 'uuid';
     }
+
+    public function hasProfilePicture() : bool
+    {
+        return $this->img_id != null;
+    }
 }
