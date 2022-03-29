@@ -6,6 +6,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Image;
 use App\Models\User;
+use Laravel\Sanctum\PersonalAccessToken;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
@@ -68,5 +69,13 @@ class UserController extends Controller
         return $userResource->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
+    public function destroy(User $user) {
+        $user->delete();
+        return response()->json([
+                'links' => [
+                    'login' => 'api/login'
+                ]
+            ], Response::HTTP_OK);
+    }
 
 }
