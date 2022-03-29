@@ -64,6 +64,6 @@ class User extends Authenticatable
 
     public function hasProfilePicture() : bool
     {
-        return $this->img_id != null;
+        return $this->getAttribute('img_ID') != null;
     }
 }
