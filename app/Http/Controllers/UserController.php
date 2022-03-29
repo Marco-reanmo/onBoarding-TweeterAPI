@@ -70,6 +70,7 @@ class UserController extends Controller
     }
 
     public function destroy(User $user) {
+        $user->profile_picture()->delete();
         $user->delete();
         return response()->json([
                 'links' => [
