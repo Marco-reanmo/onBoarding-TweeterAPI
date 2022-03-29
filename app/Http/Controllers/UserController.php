@@ -25,6 +25,21 @@ class UserController extends Controller
         return $usersCollection->response()->setStatusCode(Response::HTTP_OK);
     }
 
+    private function getLinks(User $user) {
+        return [
+            'profile' => 'users/' . $user->getAttribute('uuid'),
+            'follow' => 'users/' . $user->getAttribute('uuid') . '/follow',
+        ];
+    }
+
+    private function getMenuLinks(User $user) {
+        return [
+            'home' => 'api/tweets',
+            'myTweets' => 'api/tweets?user=' . $user->getAttribute('uuid'),
+            'settings' => 'api/users/' . $user->getAttribute('uuid')
+        ];
+    }
+
     public function show(User $user) {
         $menuLinks = $this->getMenuLinks(auth()->user());
         $userResource = UserResource::make($user->load('profile_picture'))->additional(['links' => $menuLinks]);
@@ -53,19 +68,5 @@ class UserController extends Controller
         return $userResource->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
-    private function getLinks(User $user) {
-        return [
-            'profile' => 'users/' . $user->getAttribute('uuid'),
-            'follow' => 'users/' . $user->getAttribute('uuid') . '/follow',
-        ];
-    }
-
-    private function getMenuLinks(User $user) {
-        return [
-            'home' => 'api/tweets',
-            'myTweets' => 'api/tweets?user=' . $user->getAttribute('uuid'),
-            'settings' => 'api/users/' . $user->getAttribute('uuid')
-        ];
-    }
 
 }
