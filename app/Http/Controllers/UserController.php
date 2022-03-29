@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 class UserController extends Controller
 {
     public function index() {
+        $this->authorize('viewAny', User::class);
         $users = User::with('profile_picture')->get();
         foreach ($users as $user) {
             $user['links'] = $this->getLinks($user);
