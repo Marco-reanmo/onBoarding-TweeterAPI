@@ -66,4 +66,9 @@ class User extends Authenticatable
     {
         return $this->getAttribute('img_ID') != null;
     }
+
+    public function isSameUserAs(User $model) : bool
+    {
+        return $this->getAttribute('id') === $model->getAttribute('id');
+    }
 }

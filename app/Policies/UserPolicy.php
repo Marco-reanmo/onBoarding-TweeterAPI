@@ -53,7 +53,7 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        return $user->getAttribute('id') === $model->getAttribute('id') ? Response::allow() : Response::deny();
+        return $user->isSameUserAs($model) ? Response::allow() : Response::deny();
     }
 
     /**
