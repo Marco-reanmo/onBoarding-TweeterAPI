@@ -18,22 +18,13 @@ class UserResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'forename' => $this->forename,
-            'surname' => $this->surname,
-            'email' => $this->email,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'profile_picture' => new ImageResource($this->whenLoaded('profile_picture'))
+            'data' => [
+                'forename' => $this->forename,
+                'surname' => $this->surname,
+                'profile_picture' => new ImageResource($this->whenLoaded('profile_picture'))
+            ],
+            'links' => $this->when(isset($this['links']), $this['links'])
         ];
     }
 
-    public function with($request)
-    {
-        return [
-            'links' => [
-                'show' => '/users/' . $this->id,
-                'follow' => '/users/' . $this->id . '/follow'
-            ]
-        ];
-    }
 }

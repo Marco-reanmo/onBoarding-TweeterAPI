@@ -20,7 +20,7 @@ class UserFactory extends Factory
     {
         return [
             'uuid' => $this->faker->uuid(),
-            'img_ID' => 1,
+            'image_id' => Image::factory(),
             'forename' => $this->faker->firstName(),
             'surname' => $this->faker->lastName(),
             'email' => $this->faker->unique()->safeEmail(),

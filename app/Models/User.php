@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -20,7 +20,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'uuid',
-        'img_ID',
+        'image_id',
         'forename',
         'surname',
         'email',
@@ -47,8 +47,38 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function profile_picture(): BelongsTo
+    public function profile_picture(): HasOne
     {
-        return $this->belongsTo(Image::class, 'img_ID');
+        return $this->hasOne(Image::class, 'id', 'image_id');
+    }
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
+
+    public function scopeFilter($query, array $filters) {
+        $query->when($filters['search'] ?? false, fn($query, $search) =>
+        $query->where(fn($query)=>
+        $query->where('forename', 'like', '%' . request('search') . '%')
+            ->orWhere('surname', 'like', '%' . request('search') . '%')
+        )
+        );
+    }
+
+
+    public function hasProfilePicture() : bool
+    {
+        return $this->getAttribute('image_id') != null;
+    }
+
+    public function isSameUserAs(User $model) : bool
+    {
+        return $this->getAttribute('id') === $model->getAttribute('id');
     }
 }
