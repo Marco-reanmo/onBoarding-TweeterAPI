@@ -15,7 +15,6 @@ class LoginController extends Controller
             return response()->json([], Response::HTTP_FORBIDDEN);
         }
 
-        session()->regenerate();
         $user = auth()->user();
         $token = $user->createToken('authenticationToken')->plainTextToken;
 

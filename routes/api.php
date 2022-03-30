@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\RecoveryController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
@@ -24,8 +25,11 @@ use Illuminate\Support\Facades\Route;
 | PUBLIC
 |--------------------------------------------------------------------------
  */
-Route::post('/login', [LoginController::class, 'store']);
-Route::post('/register', [RegisterController::class, 'store']);
+Route::middleware('guest')->group(function () {
+    Route::post('/login', [LoginController::class, 'store']);
+    Route::post('/register', [RegisterController::class, 'store']);
+});
+
 Route::put('/verify/{verification_token:token}', [VerificationController::class, 'update']);
 
 /*
@@ -36,5 +40,6 @@ Route::put('/verify/{verification_token:token}', [VerificationController::class,
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class)
         ->except('store');
+    Route::put('/users/{user:uuid}/reset-pwd', [RecoveryController::class, 'update']);
     Route::post('/logout', [LogoutController::class, 'destroy']);
 });
