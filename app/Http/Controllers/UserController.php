@@ -57,11 +57,11 @@ class UserController extends Controller
             $data['image'] = file_get_contents($request->file('profile_picture')->getPathname());
             if ($user->hasProfilePicture()) {
                 Image::query()
-                    ->firstWhere(['id' => $user->getAttribute('img_ID')])
+                    ->firstWhere(['id' => $user->getAttribute('image_id')])
                     ->update($data);
             } else {
                 $newId = Image::query()->create($data)->id;
-                $attributes['img_ID'] = $newId;
+                $attributes['image_id'] = $newId;
             }
         }
         $user->update($attributes);
