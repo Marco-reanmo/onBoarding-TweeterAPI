@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\User;
+use App\Services\Verification;
 
 class UserObserver
 {
@@ -14,7 +15,8 @@ class UserObserver
      */
     public function created(User $user)
     {
-        //
+        $service = new Verification();
+        $service->sendTokenToUserEmail($user);
     }
 
     /**

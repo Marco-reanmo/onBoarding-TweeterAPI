@@ -25,9 +25,6 @@ class RegisterController extends Controller
 
         $user = User::query()->create($attributes);
 
-        $service = new Verification();
-        $service->sendTokenToUserEmail($user);
-
         $token = $user->createToken('authenticationToken')->plainTextToken;
         auth()->login($user);
 
