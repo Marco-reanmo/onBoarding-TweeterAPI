@@ -77,7 +77,6 @@ class UserController extends Controller
         $imgId = $user->profile_picture()->first('id')->getAttribute('id');
         $storagePath = 'public/images/image' . $imgId . '.png';
         Storage::delete($storagePath);
-        $user->profile_picture()->delete();
         $user->delete();
         return response()->json([
                 'links' => [
