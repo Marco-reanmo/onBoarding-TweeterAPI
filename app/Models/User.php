@@ -20,7 +20,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'uuid',
-        'img_ID',
+        'image_id',
         'forename',
         'surname',
         'email',
@@ -49,7 +49,7 @@ class User extends Authenticatable
 
     public function profile_picture(): HasOne
     {
-        return $this->hasOne(Image::class, 'id', 'img_ID');
+        return $this->hasOne(Image::class, 'id', 'image_id');
     }
 
     /**
@@ -61,6 +61,16 @@ class User extends Authenticatable
     {
         return 'uuid';
     }
+
+    public function scopeFilter($query, array $filters) {
+        $query->when($filters['search'] ?? false, fn($query, $search) =>
+        $query->where(fn($query)=>
+        $query->where('forename', 'like', '%' . request('search') . '%')
+            ->orWhere('surname', 'like', '%' . request('search') . '%')
+        )
+        );
+    }
+
 
     public function hasProfilePicture() : bool
     {
