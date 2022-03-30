@@ -36,7 +36,7 @@ class VerifyEmail extends Mailable
     {
         return $this->from(config('MAIL_FROM_ADDRESS'), 'DoNotReply')
             ->subject('Verify your Tweeter Account')
-            ->markdown('mails.verifcation')
+            ->markdown('mails.verification')
             ->with([
                 'name' => $this->username,
                 'link' => 'http://localhost:8000/api/verify/'. $this->verificationString

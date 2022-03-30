@@ -40,6 +40,6 @@ class SendVerificationEmail implements ShouldQueue
     public function handle()
     {
         Mail::to($this->user->getAttribute('email'))->send(new VerifyEmail($this->user->getAttribute('forename'), $this->token));
-        info('Successfully sent VerficationMail to User ' . $this->user->getAttribute('uuid'));
+        info('Successfully sent VerificationMail to User ' . $this->user->getAttribute('uuid'));
     }
 }
