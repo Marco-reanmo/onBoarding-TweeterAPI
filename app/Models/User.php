@@ -64,7 +64,7 @@ class User extends Authenticatable
 
     public function hasProfilePicture() : bool
     {
-        return $this->getAttribute('img_ID') != null;
+        return $this->getAttribute('image_id') != null;
     }
 
     public function isSameUserAs(User $model) : bool
