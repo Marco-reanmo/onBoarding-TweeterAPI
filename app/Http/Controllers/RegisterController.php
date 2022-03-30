@@ -20,7 +20,7 @@ class RegisterController extends Controller
 
         if(($request->hasFile('profile_picture'))) {
             $image['image'] = file_get_contents(($request->file('profile_picture')->getPathname()));
-            $attributes['img_ID'] = Image::query()->create($image)->id;
+            $attributes['image_id'] = Image::query()->create($image)->id;
         }
 
         $user = User::query()->create($attributes);
