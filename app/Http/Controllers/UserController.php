@@ -18,7 +18,10 @@ class UserController extends Controller
     }
 
     public function index() {
-        $users = User::with('profile_picture')->get();
+        $users = User::with('profile_picture')
+            ->filter(request(['search']))
+            ->paginate(10)
+            ->withQueryString();
         foreach ($users as $user) {
             $user['links'] = $this->getLinks($user);
         }
