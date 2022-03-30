@@ -19,6 +19,8 @@ class SendVerificationEmail implements ShouldQueue
     private User $user;
     private string $token;
 
+    public int $tries = 3;
+
     /**
      * Create a new job instance.
      *
