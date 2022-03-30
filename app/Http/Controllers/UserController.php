@@ -6,6 +6,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Image;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\PersonalAccessToken;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -70,6 +71,9 @@ class UserController extends Controller
     }
 
     public function destroy(User $user) {
+        $imgId = $user->profile_picture()->first('id')->getAttribute('id');
+        $storagePath = 'public/images/image' . $imgId . '.png';
+        Storage::delete($storagePath);
         $user->profile_picture()->delete();
         $user->delete();
         return response()->json([
