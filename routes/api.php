@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\RecoveryController;
@@ -37,4 +38,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class)
         ->except('store');
     Route::put('/users/{user:uuid}/reset-pwd', [RecoveryController::class, 'update']);
+    Route::post('/users/{user:uuid}/follow', [FollowerController::class, 'store']);
+    Route::delete('/users/{user:uuid}/follow', [FollowerController::class, 'destroy']);
 });
