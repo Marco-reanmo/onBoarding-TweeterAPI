@@ -6,25 +6,24 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use PhpParser\Node\Scalar\String_;
 
-class VerifyEmail extends Mailable
+class RecoveryMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     private String $username;
-
-    private String $verificationString;
-
+    private String $newPassword;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(String $username, String $randomString)
+    public function __construct(String $username, String $newPassword)
     {
-        $this->verificationString = $randomString;
         $this->username = $username;
+        $this->newPassword = $newPassword;
     }
 
     /**
@@ -35,11 +34,12 @@ class VerifyEmail extends Mailable
     public function build()
     {
         return $this->from(config('MAIL_FROM_ADDRESS'), 'DoNotReply')
-            ->subject('Verify your Tweeter Account')
-            ->markdown('mails.verification')
+            ->subject('Password Reset')
+            ->markdown('mails.recovery')
             ->with([
                 'name' => $this->username,
-                'link' => 'http://localhost:8000/api/verify/'. $this->verificationString
+                'newPassword' => $this->newPassword,
+                'link' => 'http://localhost:8000/api/login'
             ]);
     }
 }

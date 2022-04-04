@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +16,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/home', function () {
     return view('welcome');
+});
+
+Route::middleware('guest')->group(function () {
+    Route::post('/login', [LoginController::class, 'store']);
+    Route::post('/register', [RegisterController::class, 'store']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [LogoutController::class, 'destroy']);
 });

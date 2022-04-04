@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Mail\RecoveryMail;
 use App\Mail\VerifyEmail;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -12,24 +13,22 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class SendVerificationEmail implements ShouldQueue
+class SendRecoveryEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private User $user;
-    private string $token;
-
-    public int $tries = 3;
+    private String $newPassword;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(User $user, string $token)
+    public function __construct(User $user, String $newPassword)
     {
         $this->user = $user;
-        $this->token = $token;
+        $this->newPassword = $newPassword;
     }
 
     /**
@@ -39,7 +38,7 @@ class SendVerificationEmail implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->user->getAttribute('email'))->send(new VerifyEmail($this->user->getAttribute('forename'), $this->token));
-        info('Successfully sent VerificationMail to User ' . $this->user->getAttribute('uuid'));
+        Mail::to($this->user->getAttribute('email'))->send(new RecoveryMail($this->user->getAttribute('forename'), $this->newPassword));
+        info('Successfully sent RecoveryMail to User ' . $this->user->getAttribute('uuid'));
     }
 }

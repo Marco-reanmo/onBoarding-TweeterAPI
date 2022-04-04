@@ -25,17 +25,12 @@ class RegisterController extends Controller
 
         $user = User::query()->create($attributes);
 
-        $service = new Verification();
-        $service->sendTokenToUserEmail($user);
-
-        $token = $user->createToken('authenticationToken')->plainTextToken;
         auth()->login($user);
 
         $userRes = UserResource::make($user);
 
         $response = [
             'user' => $userRes,
-            'token' => $token
         ];
 
         return response()->json($response, Response::HTTP_CREATED);

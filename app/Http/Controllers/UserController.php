@@ -74,7 +74,7 @@ class UserController extends Controller
     }
 
     public function destroy(User $user) {
-        $imgId = $user->profile_picture()->first('id')->getAttribute('id');
+        $imgId = $user->getAttribute('image_id');
         $storagePath = 'public/images/image' . $imgId . '.png';
         Storage::delete($storagePath);
         $user->delete();
