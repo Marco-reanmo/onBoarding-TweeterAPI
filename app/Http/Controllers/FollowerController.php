@@ -10,22 +10,29 @@ use Symfony\Component\HttpFoundation\Response;
 class FollowerController extends Controller
 {
     public function store(User $user) {
-        $follower = Follower::query()
-            ->where('follower_id', '=', auth()->user()->id)
-            ->firstWhere('followed_id', '=', $user->id);
+        $follower = User::query()
+            ->find($user->id)
+            ->followers()
+            ->firstWhere('follower_id', '=', auth()->user()->id);
         if(is_null($follower)) {
-            $follower = Follower::query()
-                ->create(['follower_id' =>auth()->user()->id, 'followed_id' => $user->id]);
+            User::query()
+                ->find($user->id)
+                ->followers()
+                ->attach(auth()->user());
         }
         return response()->json([], Response::HTTP_CREATED);
     }
 
     public function destroy(User $user) {
-        $follower = Follower::query()
-            ->where('follower_id', '=', auth()->user()->id)
-            ->firstWhere('followed_id', '=', $user->id);
+        $follower = User::query()
+            ->find($user->id)
+            ->followers()
+            ->firstWhere('follower_id', '=', auth()->user()->id);
         if(!is_null($follower)) {
-            $follower->delete();
+            User::query()
+                ->find($user->id)
+                ->followers()
+                ->detach(auth()->user());
         }
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
