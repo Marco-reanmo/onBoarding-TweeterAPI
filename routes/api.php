@@ -25,10 +25,6 @@ use Illuminate\Support\Facades\Route;
 | PUBLIC
 |--------------------------------------------------------------------------
  */
-Route::middleware('guest')->group(function () {
-    Route::post('/login', [LoginController::class, 'store']);
-    Route::post('/register', [RegisterController::class, 'store']);
-});
 
 Route::put('/verify/{verification_token:token}', [VerificationController::class, 'update']);
 
@@ -41,5 +37,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class)
         ->except('store');
     Route::put('/users/{user:uuid}/reset-pwd', [RecoveryController::class, 'update']);
-    Route::post('/logout', [LogoutController::class, 'destroy']);
 });
