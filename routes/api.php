@@ -38,5 +38,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class)
         ->except('store');
     Route::put('/users/{user:uuid}/reset-pwd', [RecoveryController::class, 'update']);
-    Route::post('/users/{user:uuid}/follow', [FollowerController::class, 'store']);
+    Route::post('/users/{user:uuid}/toggle-follow', [FollowerController::class, 'store']);
 });
