@@ -22,19 +22,9 @@ class UserController extends Controller
             ->filter(request(['search']))
             ->paginate(10)
             ->withQueryString();
-        foreach ($users as $user) {
-            $user['links'] = $this->getLinks($user);
-        }
         $menuLinks = $this->getMenuLinks(auth()->user());
         $usersCollection = UserResource::collection($users)->additional(['links' => $menuLinks]);
         return $usersCollection->response()->setStatusCode(Response::HTTP_OK);
-    }
-
-    private function getLinks(User $user) {
-        return [
-            'profile' => 'users/' . $user->getAttribute('uuid'),
-            'follow' => 'users/' . $user->getAttribute('uuid') . '/follow',
-        ];
     }
 
     private function getMenuLinks(User $user) {
@@ -48,7 +38,6 @@ class UserController extends Controller
     public function show(User $user) {
         $menuLinks = $this->getMenuLinks(auth()->user());
         $userResource = UserResource::make($user->load('profile_picture'))->additional(['links' => $menuLinks]);
-        $userResource['links'] = $this->getLinks($user);
         return $userResource->response()->setStatusCode(Response::HTTP_OK);
     }
 

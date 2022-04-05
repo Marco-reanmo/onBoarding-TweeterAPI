@@ -23,7 +23,10 @@ class UserResource extends JsonResource
                 'surname' => $this->surname,
                 'profile_picture' => new ImageResource($this->whenLoaded('profile_picture'))
             ],
-            'links' => $this->when(isset($this['links']), $this['links'])
+            'links' => [
+                'profile' => 'api/users/' . $this->uuid,
+                'toggle-follow' => 'api/users/' . $this->uuid . '/toggle-follow',
+            ]
         ];
     }
 
