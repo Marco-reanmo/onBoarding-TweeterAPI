@@ -22,6 +22,11 @@ class Tweet extends Model
         return $this->hasMany(Tweet::class, 'parent_id');
     }
 
+    public function allComments(): HasMany
+    {
+        return $this->comments()->with('allComments');
+    }
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
