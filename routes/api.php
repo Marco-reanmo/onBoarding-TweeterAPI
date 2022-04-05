@@ -39,5 +39,4 @@ Route::middleware('auth:sanctum')->group(function () {
         ->except('store');
     Route::put('/users/{user:uuid}/reset-pwd', [RecoveryController::class, 'update']);
     Route::post('/users/{user:uuid}/follow', [FollowerController::class, 'store']);
-    Route::delete('/users/{user:uuid}/follow', [FollowerController::class, 'destroy']);
 });
