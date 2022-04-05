@@ -19,6 +19,7 @@ class TweetFactory extends Factory
     public function definition()
     {
         return [
+            'uuid' => $this->faker->uuid(),
             'user_id' => User::factory(),
             'image_id' => Image::factory(),
             'parent_id' => null,
