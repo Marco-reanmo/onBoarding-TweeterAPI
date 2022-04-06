@@ -32,8 +32,28 @@ class Tweet extends Model
         return $this->comments()->with('allComments');
     }
 
+    public function getCommentCount(): int
+    {
+        $allComments = $this->allComments()->get();
+        $count = $allComments->count();
+        foreach ($allComments as $comment) {
+            $count += $comment->getCommentCount();
+        }
+        return $count;
+    }
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'uuid';
     }
 }
