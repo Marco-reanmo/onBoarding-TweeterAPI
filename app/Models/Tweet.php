@@ -81,4 +81,9 @@ class Tweet extends Model
             )
         );
     }
+
+    public function hasImage(): bool
+    {
+        return $this->getAttribute('image_id') != null;
+    }
 }

@@ -64,6 +64,17 @@ class TweetController extends Controller
     public function update(UpdateTweetRequest $request, Tweet $tweet)
     {
         $attributes = $request->validated();
+        if($request->hasFile('image')) {
+            $data['image'] = file_get_contents($request->file('image')->getPathname());
+            if ($tweet->hasImage()) {
+                Image::query()
+                    ->firstWhere(['id' => $tweet->getAttribute('image_id')])
+                    ->update($data);
+            } else {
+                $newId = Image::query()->create($data)->id;
+                $attributes['image_id'] = $newId;
+            }
+        }
         $tweet->update($attributes);
         $tweeterRes = TweetResource::make($tweet);
         return $tweeterRes->response()->setStatusCode(Response::HTTP_CREATED);
