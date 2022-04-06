@@ -13,6 +13,14 @@ class Tweet extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'uuid',
+        'user_id',
+        'parent_id',
+        'image_id',
+        'body'
+    ];
+
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Tweet::class);
