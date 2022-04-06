@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTweetRequest;
+use App\Http\Requests\UpdateTweetRequest;
 use App\Http\Resources\TweetResource;
 use App\Models\Image;
 use App\Models\Tweet;
@@ -60,9 +61,12 @@ class TweetController extends Controller
         //
     }
 
-    public function update(Request $request, Tweet $tweet)
+    public function update(UpdateTweetRequest $request, Tweet $tweet)
     {
-        //
+        $attributes = $request->validated();
+        $tweet->update($attributes);
+        $tweeterRes = TweetResource::make($tweet);
+        return $tweeterRes->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function destroy(Tweet $tweet)
