@@ -33,7 +33,8 @@ class TweetController extends Controller
 
     public function show(Tweet $tweet)
     {
-        //
+        $tweetRes = TweetResource::make($tweet->load('allComments'));
+        return $tweetRes->response()->setStatusCode(Response::HTTP_OK);
     }
 
     public function edit(Tweet $tweet)

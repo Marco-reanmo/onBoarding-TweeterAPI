@@ -20,6 +20,7 @@ class TweetResource extends JsonResource
                 'author' => new UserResource($this->whenLoaded('author')),
                 'body' => $this->body,
                 'comments count' => $this->getCommentCount(),
+                'comments' => TweetResource::collection($this->whenLoaded('allComments'))
                 //'like count' => whatever
             ],
             'links' => [
