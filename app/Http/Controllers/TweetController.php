@@ -76,7 +76,7 @@ class TweetController extends Controller
             }
         }
         $tweet->update($attributes);
-        $tweeterRes = TweetResource::make($tweet);
+        $tweeterRes = TweetResource::make($tweet->load('image'));
         return $tweeterRes->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
