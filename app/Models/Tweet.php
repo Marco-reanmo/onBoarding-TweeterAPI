@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -55,5 +56,16 @@ class Tweet extends Model
     public function getRouteKeyName()
     {
         return 'uuid';
+    }
+
+    public function scopeFilter($query, array $filters) {
+        $query->when($filters['search'] ?? false, fn($query, $search) =>
+            $query->where(fn($query)=>
+                $query->whereHas('author', function (Builder $query) {
+                    $query->where('forename', 'like', '%' . request('search') . '%')
+                        ->orWhere('surname', 'like', '%' . request('search') . '%');
+                })->orWhere('body', 'like', '%' . request('search') . '%')
+            )
+        );
     }
 }

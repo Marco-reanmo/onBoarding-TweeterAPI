@@ -15,6 +15,7 @@ class TweetController extends Controller
         $tweets = Tweet::with(['author'])
             ->whereIn('user_id', $followers)
             ->where('parent_id', '=', null)
+            ->filter(request(['search']))
             ->get();
         $tweetRes = TweetResource::collection($tweets);
         return $tweetRes->response()->setStatusCode(Response::HTTP_OK);
