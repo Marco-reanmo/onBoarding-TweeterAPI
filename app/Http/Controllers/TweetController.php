@@ -82,6 +82,7 @@ class TweetController extends Controller
 
     public function destroy(Tweet $tweet)
     {
-        //
+        $tweet->delete();
+        return response()->json()->setStatusCode(Response::HTTP_NO_CONTENT);
     }
 }

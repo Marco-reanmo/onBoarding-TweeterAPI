@@ -65,7 +65,7 @@ class TweetPolicy
      */
     public function delete(User $user, Tweet $tweet)
     {
-        //
+        return $user->isSameUserAs($tweet->author()->first());
     }
 
     /**
