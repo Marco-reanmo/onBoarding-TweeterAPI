@@ -18,6 +18,7 @@ class TweetResource extends JsonResource
         return [
             'tweet' => [
                 'author' => new UserResource($this->whenLoaded('author')),
+                'image' => new ImageResource($this->whenLoaded('image')),
                 'body' => $this->body,
                 'comments count' => $this->getCommentCount(),
                 'comments' => TweetResource::collection($this->whenLoaded('allComments'))

@@ -12,7 +12,7 @@ class TweetController extends Controller
     public function index()
     {
         $followers = auth()->user()->followedBy()->pluck('users.id');
-        $tweets = Tweet::with(['author'])
+        $tweets = Tweet::with(['image', 'author.profile_picture'])
             ->whereIn('user_id', $followers)
             ->where('parent_id', '=', null)
             ->filter(request(['search']))
@@ -33,7 +33,7 @@ class TweetController extends Controller
 
     public function show(Tweet $tweet)
     {
-        $tweetRes = TweetResource::make($tweet->load('allComments'));
+        $tweetRes = TweetResource::make($tweet->load(['image', 'author.profile_picture', 'allComments.author.profile_picture', 'allComments.image']));
         return $tweetRes->response()->setStatusCode(Response::HTTP_OK);
     }
 

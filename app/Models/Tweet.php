@@ -30,7 +30,12 @@ class Tweet extends Model
 
     public function allComments(): HasMany
     {
-        return $this->comments()->with('allComments');
+        return $this->comments()->with(['allComments.author.profile_picture', 'allComments.image']);
+    }
+
+    public function image(): HasOne
+    {
+        return $this->hasOne(Image::class, 'id', 'image_id');
     }
 
     public function getCommentCount(): int
