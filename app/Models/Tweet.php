@@ -80,6 +80,13 @@ class Tweet extends Model
                 })->orWhere('body', 'like', '%' . request('search') . '%')
             )
         );
+        $query->when($filters['user'] ?? false, fn($query, $search) =>
+            $query->where(fn($query)=>
+                $query->whereHas('author', function (Builder $query) {
+                    $query->where('uuid', '=', request('user'));
+                 })
+            )
+        );
     }
 
     public function hasImage(): bool

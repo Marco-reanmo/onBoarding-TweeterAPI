@@ -26,7 +26,7 @@ class TweetController extends Controller
         $tweets = Tweet::with(['image', 'author.profile_picture'])
             ->whereIn('user_id', $relevantIds)
             ->where('parent_id', '=', null)
-            ->filter(request(['search']))
+            ->filter(request(['search', 'user']))
             ->get();
         $tweetRes = TweetResource::collection($tweets);
         return $tweetRes->response()->setStatusCode(Response::HTTP_OK);
