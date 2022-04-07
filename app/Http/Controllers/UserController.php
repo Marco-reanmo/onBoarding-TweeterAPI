@@ -22,22 +22,18 @@ class UserController extends Controller
             ->filter(request(['search']))
             ->paginate(10)
             ->withQueryString();
-        $menuLinks = $this->getMenuLinks(auth()->user());
-        $usersCollection = UserResource::collection($users)->additional(['links' => $menuLinks]);
+        $usersCollection = UserResource::collection($users)
+            ->additional([
+                'links' => auth()->user()->getMenuLinks()
+            ]);
         return $usersCollection->response()->setStatusCode(Response::HTTP_OK);
     }
 
-    private function getMenuLinks(User $user) {
-        return [
-            'home' => 'api/tweets',
-            'myTweets' => 'api/tweets?user=' . $user->getAttribute('uuid'),
-            'settings' => 'api/users/' . $user->getAttribute('uuid')
-        ];
-    }
-
     public function show(User $user) {
-        $menuLinks = $this->getMenuLinks(auth()->user());
-        $userResource = UserResource::make($user->load('profile_picture'))->additional(['links' => $menuLinks]);
+        $userResource = UserResource::make($user->load('profile_picture'))
+            ->additional([
+                'links' => auth()->user()->getMenuLinks()
+            ]);
         return $userResource->response()->setStatusCode(Response::HTTP_OK);
     }
 
@@ -57,8 +53,11 @@ class UserController extends Controller
             }
         }
         $user->update($attributes);
-        $menuLinks = $this->getMenuLinks($user);
-        $userResource = UserResource::make($user->load('profile_picture'))->additional(['links' => $menuLinks]);
+        $userResource = UserResource::make($user
+            ->load('profile_picture'))
+            ->additional([
+                'links' => $user->getMenuLinks()
+            ]);
         return $userResource->response()->setStatusCode(Response::HTTP_CREATED);
     }
 

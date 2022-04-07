@@ -28,7 +28,10 @@ class TweetController extends Controller
             ->where('parent_id', '=', null)
             ->filter(request(['search', 'user']))
             ->get();
-        $tweetRes = TweetResource::collection($tweets);
+        $tweetRes = TweetResource::collection($tweets)
+            ->additional([
+                'links' => $currentUser->getMenuLinks()
+            ]);
         return $tweetRes->response()->setStatusCode(Response::HTTP_OK);
     }
 
@@ -40,7 +43,8 @@ class TweetController extends Controller
     public function store(StoreTweetRequest $request)
     {
         $attributes = $request->validated();
-        $attributes['user_id'] = auth()->user()->getAttribute('id');
+        $currentUser = auth()->user();
+        $attributes['user_id'] = $currentUser->getAttribute('id');
         $attributes['uuid'] = Str::uuid();
 
         if(($request->hasFile('image'))) {
@@ -48,13 +52,23 @@ class TweetController extends Controller
             $attributes['image_id'] = Image::query()->create($image)->id;
         }
         $tweet = Tweet::query()->create($attributes);
-        $tweetRes = TweetResource::make($tweet->load(['image', 'author.profile_picture']));
+        $tweetRes = TweetResource::make($tweet->load([
+            'image',
+            'author.profile_picture'
+        ]))->additional([
+                'links' => $currentUser->getMenuLinks()
+            ]);
         return $tweetRes->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(Tweet $tweet)
     {
-        $tweetRes = TweetResource::make($tweet->load(['image', 'author.profile_picture', 'allComments.author.profile_picture', 'allComments.image']));
+        $tweetRes = TweetResource::make($tweet->load([
+            'image',
+            'author.profile_picture',
+            'allComments.author.profile_picture',
+            'allComments.image'
+        ]));
         return $tweetRes->response()->setStatusCode(Response::HTTP_OK);
     }
 
@@ -78,7 +92,10 @@ class TweetController extends Controller
             }
         }
         $tweet->update($attributes);
-        $tweeterRes = TweetResource::make($tweet->load('image'));
+        $tweeterRes = TweetResource::make($tweet->load('image'))
+            ->additional([
+                'links' => auth()->user()->getMenuLinks()
+            ]);
         return $tweeterRes->response()->setStatusCode(Response::HTTP_CREATED);
     }
 

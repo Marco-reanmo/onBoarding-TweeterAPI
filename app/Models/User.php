@@ -99,4 +99,12 @@ class User extends Authenticatable
     {
         return $this->getAttribute('id') === $model->getAttribute('id');
     }
+
+    public function getMenuLinks() {
+        return [
+            'home' => 'api/tweets',
+            'myTweets' => 'api/tweets?user=' . $this->getAttribute('uuid'),
+            'settings' => 'api/users/' . $this->getAttribute('uuid')
+        ];
+    }
 }
