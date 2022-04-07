@@ -27,7 +27,9 @@ class TweetController extends Controller
             ->whereIn('user_id', $relevantIds)
             ->where('parent_id', '=', null)
             ->filter(request(['search', 'user']))
-            ->get();
+            ->orderBy('created_at', 'desc')
+            ->simplePaginate(10)
+            ->withQueryString();
         $tweetRes = TweetResource::collection($tweets)
             ->additional([
                 'links' => $currentUser->getMenuLinks()
