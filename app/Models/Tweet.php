@@ -74,14 +74,14 @@ class Tweet extends Model
     public function scopeFilter($query, array $filters) {
         $query->when($filters['search'] ?? false, function($query) use($filters) {
             $search = $filters['search'];
-            $query->whereHas('author', function (Builder $query) use ($search) {
+            $query->whereHas('author', function(Builder $query) use($search) {
                 $query->where('forename', 'like', '%' . $search . '%')
                     ->orWhere('surname', 'like', '%' . $search . '%');
             })->orWhere('body', 'like', '%' . $search . '%');
         });
-        $query->when($filters['user'] ?? false, function ($query) use ($filters) {
+        $query->when($filters['user'] ?? false, function($query) use($filters) {
             $user = $filters['user'];
-            $query->whereHas('author', function (Builder $query) use ($user) {
+            $query->whereHas('author', function(Builder $query) use($user) {
                 $query->where('uuid', '=', $user);
             });
         });
