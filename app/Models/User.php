@@ -81,12 +81,13 @@ class User extends Authenticatable
     }
 
     public function scopeFilter($query, array $filters) {
-        $query->when($filters['search'] ?? false, fn($query, $search) =>
-        $query->where(fn($query)=>
-        $query->where('forename', 'like', '%' . request('search') . '%')
-            ->orWhere('surname', 'like', '%' . request('search') . '%')
-        )
-        );
+        $query->when($filters['search'] ?? false, function($query) use($filters) {
+            $search = $filters['search'];
+            $query->where(function($query) use($search) {
+                $query->where('forename', 'like', '%' . $search . '%')
+                    ->orWhere('surname', 'like', '%' . $search . '%');
+            });
+        });
     }
 
 

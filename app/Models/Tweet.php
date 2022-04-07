@@ -72,21 +72,19 @@ class Tweet extends Model
     }
 
     public function scopeFilter($query, array $filters) {
-        $query->when($filters['search'] ?? false, fn($query, $search) =>
-            $query->where(fn($query)=>
-                $query->whereHas('author', function (Builder $query) {
-                    $query->where('forename', 'like', '%' . request('search') . '%')
-                        ->orWhere('surname', 'like', '%' . request('search') . '%');
-                })->orWhere('body', 'like', '%' . request('search') . '%')
-            )
-        );
-        $query->when($filters['user'] ?? false, fn($query, $search) =>
-            $query->where(fn($query)=>
-                $query->whereHas('author', function (Builder $query) {
-                    $query->where('uuid', '=', request('user'));
-                 })
-            )
-        );
+        $query->when($filters['search'] ?? false, function($query) use($filters) {
+            $search = $filters['search'];
+            $query->whereHas('author', function (Builder $query) use ($search) {
+                $query->where('forename', 'like', '%' . $search . '%')
+                    ->orWhere('surname', 'like', '%' . $search . '%');
+            })->orWhere('body', 'like', '%' . $search . '%');
+        });
+        $query->when($filters['user'] ?? false, function ($query) use ($filters) {
+            $user = $filters['user'];
+            $query->whereHas('author', function (Builder $query) use ($user) {
+                $query->where('uuid', '=', $user);
+            });
+        });
     }
 
     public function hasImage(): bool
