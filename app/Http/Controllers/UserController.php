@@ -48,8 +48,7 @@ class UserController extends Controller
                     ->firstWhere(['id' => $user->getAttribute('image_id')])
                     ->update($data);
             } else {
-                $newId = Image::query()->create($data)->id;
-                $attributes['image_id'] = $newId;
+                $attributes['image_id'] = Image::query()->create($data)->getAttribute('id');
             }
         }
         $user->update($attributes);

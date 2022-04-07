@@ -89,8 +89,7 @@ class TweetController extends Controller
                     ->firstWhere(['id' => $tweet->getAttribute('image_id')])
                     ->update($data);
             } else {
-                $newId = Image::query()->create($data)->id;
-                $attributes['image_id'] = $newId;
+                $attributes['image_id'] = Image::query()->create($data)->getAttribute('id');
             }
         }
         $tweet->update($attributes);
