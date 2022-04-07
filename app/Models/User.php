@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -63,6 +65,11 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'followers', 'followed_id', 'follower_id');
     }
 
+    public function tweets(): HasMany
+    {
+        return $this->hasMany(Tweet::class);
+    }
+
     /**
      * Get the route key for the model.
      *
@@ -74,12 +81,13 @@ class User extends Authenticatable
     }
 
     public function scopeFilter($query, array $filters) {
-        $query->when($filters['search'] ?? false, fn($query, $search) =>
-        $query->where(fn($query)=>
-        $query->where('forename', 'like', '%' . request('search') . '%')
-            ->orWhere('surname', 'like', '%' . request('search') . '%')
-        )
-        );
+        $query->when($filters['search'] ?? false, function($query) use($filters) {
+            $search = $filters['search'];
+            $query->where(function($query) use($search) {
+                $query->where('forename', 'like', '%' . $search . '%')
+                    ->orWhere('surname', 'like', '%' . $search . '%');
+            });
+        });
     }
 
 
@@ -91,5 +99,13 @@ class User extends Authenticatable
     public function isSameUserAs(User $model) : bool
     {
         return $this->getAttribute('id') === $model->getAttribute('id');
+    }
+
+    public function getMenuLinks() {
+        return [
+            'home' => 'api/tweets',
+            'myTweets' => 'api/tweets?user=' . $this->getAttribute('uuid'),
+            'settings' => 'api/users/' . $this->getAttribute('uuid')
+        ];
     }
 }

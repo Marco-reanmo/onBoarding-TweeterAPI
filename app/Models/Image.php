@@ -17,4 +17,9 @@ class Image extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function tweet(): BelongsTo
+    {
+        return $this->belongsTo(Tweet::class);
+    }
+
 }

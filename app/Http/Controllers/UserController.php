@@ -22,33 +22,18 @@ class UserController extends Controller
             ->filter(request(['search']))
             ->paginate(10)
             ->withQueryString();
-        foreach ($users as $user) {
-            $user['links'] = $this->getLinks($user);
-        }
-        $menuLinks = $this->getMenuLinks(auth()->user());
-        $usersCollection = UserResource::collection($users)->additional(['links' => $menuLinks]);
+        $usersCollection = UserResource::collection($users)
+            ->additional([
+                'links' => auth()->user()->getMenuLinks()
+            ]);
         return $usersCollection->response()->setStatusCode(Response::HTTP_OK);
     }
 
-    private function getLinks(User $user) {
-        return [
-            'profile' => 'users/' . $user->getAttribute('uuid'),
-            'follow' => 'users/' . $user->getAttribute('uuid') . '/follow',
-        ];
-    }
-
-    private function getMenuLinks(User $user) {
-        return [
-            'home' => 'api/tweets',
-            'myTweets' => 'api/tweets?user=' . $user->getAttribute('uuid'),
-            'settings' => 'api/users/' . $user->getAttribute('uuid')
-        ];
-    }
-
     public function show(User $user) {
-        $menuLinks = $this->getMenuLinks(auth()->user());
-        $userResource = UserResource::make($user->load('profile_picture'))->additional(['links' => $menuLinks]);
-        $userResource['links'] = $this->getLinks($user);
+        $userResource = UserResource::make($user->load('profile_picture'))
+            ->additional([
+                'links' => auth()->user()->getMenuLinks()
+            ]);
         return $userResource->response()->setStatusCode(Response::HTTP_OK);
     }
 
@@ -63,13 +48,15 @@ class UserController extends Controller
                     ->firstWhere(['id' => $user->getAttribute('image_id')])
                     ->update($data);
             } else {
-                $newId = Image::query()->create($data)->id;
-                $attributes['image_id'] = $newId;
+                $attributes['image_id'] = Image::query()->create($data)->getAttribute('id');
             }
         }
         $user->update($attributes);
-        $menuLinks = $this->getMenuLinks($user);
-        $userResource = UserResource::make($user->load('profile_picture'))->additional(['links' => $menuLinks]);
+        $userResource = UserResource::make($user
+            ->load('profile_picture'))
+            ->additional([
+                'links' => $user->getMenuLinks()
+            ]);
         return $userResource->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
