@@ -21,6 +21,7 @@ class TweetController extends Controller
     public function index()
     {
         $followers = auth()->user()->followedBy()->pluck('users.id');
+        $followers[] = auth()->user()->getAttribute('id');
         $tweets = Tweet::with(['image', 'author.profile_picture'])
             ->whereIn('user_id', $followers)
             ->where('parent_id', '=', null)
