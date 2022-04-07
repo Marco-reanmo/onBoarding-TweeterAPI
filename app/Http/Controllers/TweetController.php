@@ -38,11 +38,6 @@ class TweetController extends Controller
         return $tweetRes->response()->setStatusCode(Response::HTTP_OK);
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(StoreTweetRequest $request)
     {
         $attributes = $request->validated();
@@ -73,11 +68,6 @@ class TweetController extends Controller
             'allComments.image'
         ]));
         return $tweetRes->response()->setStatusCode(Response::HTTP_OK);
-    }
-
-    public function edit(Tweet $tweet)
-    {
-        //
     }
 
     public function update(UpdateTweetRequest $request, Tweet $tweet)
