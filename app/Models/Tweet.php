@@ -67,6 +67,11 @@ class Tweet extends Model
         return $this->belongsToMany(User::class, 'likes', 'user_id', 'tweet_id');
     }
 
+    public function numberOfLikes(): int
+    {
+        return $this->likes()->count();
+    }
+
     /**
      * Get the route key for the model.
      *
