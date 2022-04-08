@@ -144,7 +144,7 @@ class User extends Authenticatable
 
     public function getOtherUsers(): Paginator|array|_IH_User_C
     {
-        return User::with('profile_picture')
+        return self::with('profile_picture')
             ->whereNot('id', $this->getAttribute('id'))
             ->filter(request(['search']))
             ->simplePaginate(10)
