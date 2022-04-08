@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'store']);
     Route::post('/register', [RegisterController::class, 'store']);
+    Route::put('/reset-pwd', [RecoveryController::class, 'update']);
 });
 
 Route::put('/verify/{verification_token:token}', [VerificationController::class, 'update']);
@@ -43,7 +44,6 @@ Route::put('/verify/{verification_token:token}', [VerificationController::class,
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class)
         ->except('store');
-    Route::put('/users/{user:uuid}/reset-pwd', [RecoveryController::class, 'update']);
     Route::post('/users/{user:uuid}/toggle-follow', [FollowerController::class, 'store']);
     Route::post('/logout', [LogoutController::class, 'destroy']);
     Route::apiResource('tweets', TweetController::class);
