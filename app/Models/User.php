@@ -75,6 +75,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Tweet::class, 'likes', 'user_id', 'tweet_id');
     }
 
+    public function verificationToken(): BelongsTo
+    {
+        return $this->belongsTo(VerificationToken::class);
+    }
+
     /**
      * Get the route key for the model.
      *
