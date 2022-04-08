@@ -8,10 +8,11 @@ use Symfony\Component\HttpFoundation\Response;
 class FollowerController extends Controller
 {
     public function store(User $user) {
-        if($user->cannot('follow')) {
+        $currentUser = auth()->user();
+        if($currentUser->cannot('follow', $user)) {
             return response()->json([], Response::HTTP_FORBIDDEN);
         }
-        $user->followers()->toggle(auth()->user());
+        $user->followers()->toggle($currentUser);
         return response()->json([], Response::HTTP_OK);
     }
 }
