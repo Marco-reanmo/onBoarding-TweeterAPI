@@ -10,9 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Laravel\Sanctum\HasApiTokens;
 use LaravelIdea\Helper\App\Models\_IH_Tweet_C;
+use LaravelIdea\Helper\App\Models\_IH_User_C;
 
 class User extends Authenticatable
 {
@@ -136,6 +138,15 @@ class User extends Authenticatable
             ->where('parent_id', '=', null)
             ->filter(request(['search', 'user']))
             ->orderBy('created_at', 'desc')
+            ->simplePaginate(10)
+            ->withQueryString();
+    }
+
+    public function getOtherUsers(): Paginator|array|_IH_User_C
+    {
+        return User::with('profile_picture')
+            ->whereNot('id', $this->getAttribute('id'))
+            ->filter(request(['search']))
             ->simplePaginate(10)
             ->withQueryString();
     }

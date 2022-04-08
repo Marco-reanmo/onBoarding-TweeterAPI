@@ -18,11 +18,7 @@ class UserController extends Controller
 
     public function index() {
         $currentUser = auth()->user();
-        $users = User::with('profile_picture')
-            ->whereNot('id', $currentUser->getAttribute('id'))
-            ->filter(request(['search']))
-            ->paginate(10)
-            ->withQueryString();
+        $users = $currentUser->getOtherUsers();
         $usersCollection = UserResource::collection($users)
             ->additional([
                 'links' => $currentUser->getMenuLinks()
