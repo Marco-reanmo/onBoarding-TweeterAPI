@@ -39,7 +39,7 @@ class VerifyEmail extends Mailable
             ->markdown('mails.verification')
             ->with([
                 'name' => $this->username,
-                'link' => 'http://localhost:8000/api/verify/'. $this->verificationString
+                'link' => config('app.url') . '/api/verify/'. $this->verificationString
             ]);
     }
 }

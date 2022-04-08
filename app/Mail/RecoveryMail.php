@@ -39,7 +39,7 @@ class RecoveryMail extends Mailable
             ->with([
                 'name' => $this->username,
                 'newPassword' => $this->newPassword,
-                'link' => 'http://localhost:8000/api/login'
+                'link' => config('app.url') . '/api/login'
             ]);
     }
 }
