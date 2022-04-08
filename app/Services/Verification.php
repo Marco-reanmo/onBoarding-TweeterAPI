@@ -4,10 +4,8 @@ namespace App\Services;
 
 use App\Http\Resources\UserResource;
 use App\Jobs\SendVerificationEmail;
-use App\Mail\VerifyEmail;
 use App\Models\User;
 use App\Models\VerificationToken;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class Verification {
