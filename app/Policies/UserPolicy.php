@@ -91,4 +91,8 @@ class UserPolicy
     {
         //
     }
+
+    public function follow(User $user, User $model) {
+        return !($user->isSameUserAs($model));
+    }
 }
