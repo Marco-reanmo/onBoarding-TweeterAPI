@@ -12,7 +12,7 @@ class FollowerController extends Controller
         if($currentUser->cannot('follow', $user)) {
             return response()->json([], Response::HTTP_FORBIDDEN);
         }
-        $user->followers()->toggle($currentUser);
+        $currentUser->followed()->toggle($user);
         return response()->json([], Response::HTTP_OK);
     }
 }
