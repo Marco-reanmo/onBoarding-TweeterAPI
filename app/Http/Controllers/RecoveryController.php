@@ -11,7 +11,7 @@ class RecoveryController extends Controller
 {
     public function update(RecoveryRequest $request) {
         $attributes = $request->validated();
-        $user = User::firstWhere('email', '=', $attributes['email']);
+        $user = User::getByEmail($attributes['email']);
         (new Recovery)($user);
         return response()->json('password-reset', Response::HTTP_CREATED);
     }

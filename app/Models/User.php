@@ -118,4 +118,10 @@ class User extends Authenticatable
             'settings' => 'api/users/' . $this->getAttribute('uuid')
         ];
     }
+
+    public static function getByEmail(string $email): User
+    {
+        return self::query()
+            ->firstWhere('email', '=', $email);
+    }
 }
