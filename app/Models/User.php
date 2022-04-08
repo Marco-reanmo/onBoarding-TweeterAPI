@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Pagination\Paginator;
 use Laravel\Sanctum\HasApiTokens;
+use LaravelIdea\Helper\App\Models\_IH_Tweet_C;
 
 class User extends Authenticatable
 {
@@ -123,5 +125,18 @@ class User extends Authenticatable
     {
         return self::query()
             ->firstWhere('email', '=', $email);
+    }
+
+    public function getTweets(): Paginator|array|_IH_Tweet_C
+    {
+        $relevantIds = $this->followed()->pluck('users.id');
+        $relevantIds[] = $this->getAttribute('id');
+        return Tweet::with(['image', 'author.profile_picture'])
+            ->whereIn('user_id', $relevantIds)
+            ->where('parent_id', '=', null)
+            ->filter(request(['search', 'user']))
+            ->orderBy('created_at', 'desc')
+            ->simplePaginate(10)
+            ->withQueryString();
     }
 }

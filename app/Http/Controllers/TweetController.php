@@ -21,15 +21,7 @@ class TweetController extends Controller
     public function index()
     {
         $currentUser = auth()->user();
-        $relevantIds = $currentUser->followed()->pluck('users.id');
-        $relevantIds[] = $currentUser->getAttribute('id');
-        $tweets = Tweet::with(['image', 'author.profile_picture'])
-            ->whereIn('user_id', $relevantIds)
-            ->where('parent_id', '=', null)
-            ->filter(request(['search', 'user']))
-            ->orderBy('created_at', 'desc')
-            ->simplePaginate(10)
-            ->withQueryString();
+        $tweets = $currentUser->getTweets();
         $tweetRes = TweetResource::collection($tweets)
             ->additional([
                 'links' => $currentUser->getMenuLinks()
