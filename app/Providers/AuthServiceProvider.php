@@ -33,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Password::defaults(function() {
             return Password::min(8)
-                ->rules(['max:64', 'required'])
+                ->rules(['max:64'])
                 ->letters()
                 ->numbers()
                 ->symbols();
