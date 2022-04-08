@@ -30,7 +30,7 @@ class RegisterRequest extends FormRequest
             'surname' => ['required', 'min:3', 'max:255', 'alpha'],
             'profile_picture' => ['image'],
             'email' => ['required', 'max:255', 'email', Rule::unique('users', 'email')],
-            'password' => ['confirmed', Password::defaults()],
+            'password' => ['required', 'confirmed', Password::defaults()],
         ];
     }
 }
