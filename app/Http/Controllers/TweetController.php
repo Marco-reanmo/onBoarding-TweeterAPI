@@ -46,7 +46,7 @@ class TweetController extends Controller
 
         if(($request->hasFile('image'))) {
             $image['image'] = file_get_contents(($request->file('image')->getPathname()));
-            $attributes['image_id'] = Image::query()->create($image)->id;
+            $attributes['image_id'] = Image::query()->create($image)->getAttribute('id');
         }
         $tweet = Tweet::query()->create($attributes);
         $tweetRes = TweetResource::make($tweet->load([
