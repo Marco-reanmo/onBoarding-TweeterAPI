@@ -22,9 +22,7 @@ class Verification {
 
     public function verify(VerificationToken $verificationToken): bool | UserResource
     {
-        $userId = $verificationToken->getAttribute('user_ID');
-        $user = User::query()
-            ->firstWhere('id', '=', $userId);
+        $user = $verificationToken->user()->first();
         $success = $user->update(['email_verified_at' => now()->toDateTimeString()]);
         if(!$success) {
             return false;
