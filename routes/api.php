@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FollowerController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\RecoveryController;
@@ -46,4 +47,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/users/{user:uuid}/toggle-follow', [FollowerController::class, 'store']);
     Route::post('/logout', [LogoutController::class, 'destroy']);
     Route::apiResource('tweets', TweetController::class);
+    Route::get('/tweets/{tweet:uuid}/likes', [LikeController::class, 'show']);
+    Route::post('/tweets/{tweet:uuid}/likes', [LikeController::class, 'store']);
 });
