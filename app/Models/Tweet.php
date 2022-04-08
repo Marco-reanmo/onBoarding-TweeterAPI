@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Pagination\Paginator;
+use LaravelIdea\Helper\App\Models\_IH_Tweet_C;
 
 class Tweet extends Model
 {
@@ -101,5 +103,16 @@ class Tweet extends Model
     public function hasImage(): bool
     {
         return $this->getAttribute('image_id') != null;
+    }
+
+    public static function getByIds(array $ids): Paginator|array|_IH_Tweet_C
+    {
+        return self::with(['image', 'author.profile_picture'])
+            ->whereIn('user_id', $ids)
+            ->where('parent_id', '=', null)
+            ->filter(request(['search', 'user']))
+            ->orderBy('created_at', 'desc')
+            ->simplePaginate(10)
+            ->withQueryString();
     }
 }

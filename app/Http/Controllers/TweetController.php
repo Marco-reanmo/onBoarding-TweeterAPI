@@ -21,7 +21,9 @@ class TweetController extends Controller
     public function index()
     {
         $currentUser = auth()->user();
-        $tweets = $currentUser->getTweets();
+        $relevantIds = $currentUser->getFollowedIds();
+        $relevantIds[] = $currentUser->getAttribute('id');
+        $tweets = Tweet::getByIds($relevantIds);
         $tweetRes = TweetResource::collection($tweets)
             ->additional([
                 'links' => $currentUser->getMenuLinks()
