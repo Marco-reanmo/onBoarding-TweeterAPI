@@ -17,13 +17,15 @@ class UserController extends Controller
     }
 
     public function index() {
+        $currentUser = auth()->user();
         $users = User::with('profile_picture')
+            ->whereNot('id', $currentUser->getAttribute('id'))
             ->filter(request(['search']))
             ->paginate(10)
             ->withQueryString();
         $usersCollection = UserResource::collection($users)
             ->additional([
-                'links' => auth()->user()->getMenuLinks()
+                'links' => $currentUser->getMenuLinks()
             ]);
         return $usersCollection->response()->setStatusCode(Response::HTTP_OK);
     }
