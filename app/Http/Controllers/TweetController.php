@@ -7,7 +7,6 @@ use App\Http\Requests\UpdateTweetRequest;
 use App\Http\Resources\TweetResource;
 use App\Models\Image;
 use App\Models\Tweet;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;

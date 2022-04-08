@@ -7,7 +7,6 @@ use App\Http\Resources\UserResource;
 use App\Models\Image;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
-use Laravel\Sanctum\PersonalAccessToken;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller

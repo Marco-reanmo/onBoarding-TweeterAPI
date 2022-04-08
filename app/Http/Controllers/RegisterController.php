@@ -6,7 +6,6 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Image;
 use App\Models\User;
-use App\Services\Verification;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
