@@ -41,7 +41,9 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user) {
         $attributes = $request->validated();
         unset($attributes['old_password']);
-        $attributes['password'] = bcrypt($attributes['password']);
+        if(isset($attributes['password'])) {
+            $attributes['password'] = bcrypt($attributes['password']);
+        }
         if($request->hasFile('profile_picture')) {
             $data['image'] = file_get_contents($request->file('profile_picture')->getPathname());
             if ($user->hasProfilePicture()) {
