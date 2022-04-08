@@ -13,25 +13,18 @@ class RegisterController extends Controller
 {
     public function store(RegisterRequest $request) {
         $attributes = $request->validated();
-
         $attributes['password'] = bcrypt($attributes['password']);
         $attributes['uuid'] = Str::uuid();
-
         if(($request->hasFile('profile_picture'))) {
             $image['image'] = file_get_contents(($request->file('profile_picture')->getPathname()));
             $attributes['image_id'] = Image::query()->create($image)->getAttribute('id');
         }
-
         $user = User::query()->create($attributes);
-
         auth()->login($user);
-
         $userRes = UserResource::make($user);
-
         $response = [
             'user' => $userRes,
         ];
-
         return response()->json($response, Response::HTTP_CREATED);
     }
 }
