@@ -35,7 +35,6 @@ class TweetController extends Controller
         $currentUser = auth()->user();
         $attributes['user_id'] = $currentUser->getAttribute('id');
         $attributes['uuid'] = Str::uuid();
-
         if(($request->hasFile('image'))) {
             $image['image'] = file_get_contents(($request->file('image')->getPathname()));
             $attributes['image_id'] = Image::query()->create($image)->getAttribute('id');
