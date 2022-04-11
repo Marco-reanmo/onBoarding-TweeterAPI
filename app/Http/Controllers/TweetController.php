@@ -62,9 +62,9 @@ class TweetController extends Controller
         $attributes = $request->validated();
         if($request->hasFile('image')) {
             $imagePath = $request->file('image')->getPathname();
-            (new UpdateTweet)($attributes, $tweet, $imagePath);
+            (new UpdateTweet($tweet))($attributes, $imagePath);
         } else {
-            (new UpdateTweet)($attributes, $tweet);
+            (new UpdateTweet($tweet))($attributes);
         }
         $tweeterRes = TweetResource::make($tweet->load('image'));
         return $tweeterRes->response()->setStatusCode(Response::HTTP_CREATED);

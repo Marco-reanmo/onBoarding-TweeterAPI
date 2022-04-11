@@ -32,9 +32,9 @@ class UserController extends Controller
         $attributes = $request->validated();
         if($request->hasFile('profile_picture')) {
             $imagePath = $request->file('profile_picture')->getPathname();
-            (new UpdateUser)($attributes, $user, $imagePath);
+            (new UpdateUser($user))($attributes, $imagePath);
         } else {
-            (new UpdateUser)($attributes, $user);
+            (new UpdateUser($user))($attributes);
         }
         $userResource = UserResource::make($user->load('profile_picture'));
         return $userResource->response()->setStatusCode(Response::HTTP_CREATED);
