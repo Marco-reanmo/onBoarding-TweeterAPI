@@ -118,13 +118,13 @@ class Tweet extends Model
             ->withQueryString();
     }
 
-    public static function post($attributes, $path = null): Model|_IH_Tweet_QB|Builder|Tweet
+    public static function post($attributes, $path = null): Tweet
     {
         $currentUser = auth()->user();
         $attributes['user_id'] = $currentUser->getAttribute('id');
         $attributes['uuid'] = Str::uuid();
         if($path != null) {
-            $attributes['image_id'] = Image::createByFile($path);
+            $attributes['image_id'] = Image::createByFile($path)->getAttribute('id');
         }
         return self::query()->create($attributes);
     }

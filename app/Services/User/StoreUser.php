@@ -20,7 +20,7 @@ class StoreUser
         if(($request->hasFile('profile_picture'))) {
             $attributes['image_id'] = Image::createByFile(
                 $request->file('profile_picture')->getPathname()
-            );
+            )->getAttribute('id');
         }
         return User::query()->create($attributes);
     }
