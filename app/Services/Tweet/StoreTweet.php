@@ -2,7 +2,6 @@
 
 namespace App\Services\Tweet;
 
-use App\Http\Requests\StoreTweetRequest;
 use App\Models\Image;
 use App\Models\Tweet;
 use Illuminate\Support\Str;

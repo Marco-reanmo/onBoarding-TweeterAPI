@@ -2,7 +2,6 @@
 
 namespace App\Services\Tweet;
 
-use App\Http\Requests\UpdateTweetRequest;
 use App\Models\Image;
 use App\Models\Tweet;
 

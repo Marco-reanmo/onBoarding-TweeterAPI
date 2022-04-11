@@ -2,7 +2,6 @@
 
 namespace App\Services\Recovery;
 
-use App\Http\Requests\RecoveryRequest;
 use App\Jobs\SendRecoveryEmail;
 use App\Models\User;
 use Illuminate\Support\Str;
