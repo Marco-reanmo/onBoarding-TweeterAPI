@@ -38,16 +38,19 @@ class TweetController extends Controller
         $attributes['user_id'] = $currentUser->getAttribute('id');
         $attributes['uuid'] = Str::uuid();
         if(($request->hasFile('image'))) {
-            $image['image'] = file_get_contents(($request->file('image')->getPathname()));
-            $attributes['image_id'] = Image::query()->create($image)->getAttribute('id');
+            $attributes['image_id'] = Image::createByFile(
+                $request->file('image')->getPathname()
+            );
         }
         $tweet = Tweet::query()->create($attributes);
-        $tweetRes = TweetResource::make($tweet->load([
-            'image',
-            'author.profile_picture'
-        ]))->additional([
-                'links' => $currentUser->getMenuLinks()
-            ]);
+        $tweetRes = TweetResource::make(
+            $tweet->load([
+                'image',
+                'author.profile_picture'
+            ])
+        )->additional([
+            'links' => $currentUser->getMenuLinks()
+        ]);
         return $tweetRes->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
@@ -66,11 +69,13 @@ class TweetController extends Controller
     {
         $attributes = $request->validated();
         if($request->hasFile('image')) {
-            $data['image'] = file_get_contents($request->file('image')->getPathname());
+            $path = $request->file('image')->getPathname();
             if ($tweet->hasImage()) {
-                $tweet->image()->update($data);
+                $tweet->image()
+                    ->first()
+                    ->updateByFile($path);
             } else {
-                $attributes['image_id'] = Image::query()->create($data)->getAttribute('id');
+                $attributes['image_id'] = Image::createByFile($path)->get('id');
             }
         }
         $tweet->update($attributes);

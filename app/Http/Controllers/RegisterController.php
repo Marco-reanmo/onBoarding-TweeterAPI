@@ -16,8 +16,9 @@ class RegisterController extends Controller
         $attributes['password'] = bcrypt($attributes['password']);
         $attributes['uuid'] = Str::uuid();
         if(($request->hasFile('profile_picture'))) {
-            $image['image'] = file_get_contents(($request->file('profile_picture')->getPathname()));
-            $attributes['image_id'] = Image::query()->create($image)->getAttribute('id');
+            $attributes['image_id'] = Image::createByFile(
+                $request->file('profile_picture')->getPathname()
+            );
         }
         $user = User::query()->create($attributes);
         auth()->login($user);
