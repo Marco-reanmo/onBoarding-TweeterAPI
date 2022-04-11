@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Str;
 use LaravelIdea\Helper\App\Models\_IH_Tweet_C;
+use LaravelIdea\Helper\App\Models\_IH_Tweet_QB;
 
 class Tweet extends Model
 {
@@ -114,5 +116,16 @@ class Tweet extends Model
             ->orderBy('created_at', 'desc')
             ->simplePaginate(10)
             ->withQueryString();
+    }
+
+    public static function post($attributes, $path = null): Model|_IH_Tweet_QB|Builder|Tweet
+    {
+        $currentUser = auth()->user();
+        $attributes['user_id'] = $currentUser->getAttribute('id');
+        $attributes['uuid'] = Str::uuid();
+        if($path != null) {
+            $attributes['image_id'] = Image::createByFile($path);
+        }
+        return self::query()->create($attributes);
     }
 }
