@@ -90,7 +90,7 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'uuid';
     }
@@ -116,7 +116,8 @@ class User extends Authenticatable
         return $this->getAttribute('id') === $model->getAttribute('id');
     }
 
-    public function getMenuLinks() {
+    public function getMenuLinks(): array
+    {
         return [
             'home' => 'api/tweets',
             'myTweets' => 'api/tweets?user=' . $this->getAttribute('uuid'),
@@ -130,7 +131,8 @@ class User extends Authenticatable
             ->firstWhere('email', '=', $email);
     }
 
-    public function newsfeed() {
+    public function newsfeed(): Paginator|array|_IH_Tweet_C
+    {
         $relevantIds = $this->getFollowedIds();
         $relevantIds[] = $this->getAttribute('id');
         return Tweet::getByIds($relevantIds);
