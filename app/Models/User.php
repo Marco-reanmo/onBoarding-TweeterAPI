@@ -103,7 +103,6 @@ class User extends Authenticatable
         });
     }
 
-
     public function hasProfilePicture() : bool
     {
         return $this->getAttribute('image_id') != null;
