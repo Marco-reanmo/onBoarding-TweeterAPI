@@ -8,17 +8,15 @@ use App\Models\Tweet;
 
 class UpdateTweet
 {
-    public function __invoke(UpdateTweetRequest $request, Tweet $tweet)
+    public function __invoke(array $attributes, Tweet $tweet, string $imagePath = null)
     {
-        $attributes = $request->validated();
-        if($request->hasFile('image')) {
-            $path = $request->file('image')->getPathname();
+        if($imagePath != null) {
             if ($tweet->hasImage()) {
                 $tweet->image()
                     ->first()
-                    ->updateByFile($path);
+                    ->updateByFile($imagePath);
             } else {
-                $attributes['image_id'] = Image::createByFile($path)->get('id');
+                $attributes['image_id'] = Image::createByFile($imagePath)->get('id');
             }
         }
         $tweet->update($attributes);

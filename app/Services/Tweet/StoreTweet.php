@@ -3,18 +3,19 @@
 namespace App\Services\Tweet;
 
 use App\Http\Requests\StoreTweetRequest;
+use App\Models\Image;
 use App\Models\Tweet;
+use Illuminate\Support\Str;
 
 class StoreTweet
 {
-    public function __invoke(StoreTweetRequest $request): Tweet
+    public function __invoke(array $attributes, string $imagePath = null): Tweet
     {
-        $attributes = $request->validated();
-        if(($request->hasFile('image'))) {
-            $path = $request->file('image')->getPathname();
-            return Tweet::post($attributes, $path);
-        } else {
-            return Tweet::post($attributes);
+        $attributes['user_id'] = auth()->user()->getAttribute('id');
+        $attributes['uuid'] = Str::uuid();
+        if($imagePath != null) {
+            $attributes['image_id'] = Image::createByFile($imagePath)->getAttribute('id');
         }
+        return Tweet::query()->create($attributes)->getModel();
     }
 }

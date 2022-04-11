@@ -6,10 +6,12 @@ use App\Http\Requests\StoreTweetRequest;
 use App\Http\Requests\UpdateTweetRequest;
 use App\Http\Resources\TweetCollection;
 use App\Http\Resources\TweetResource;
+use App\Models\Image;
 use App\Models\Tweet;
 use App\Services\Tweet\DestroyTweet;
 use App\Services\Tweet\StoreTweet;
 use App\Services\Tweet\UpdateTweet;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class TweetController extends Controller
@@ -28,7 +30,13 @@ class TweetController extends Controller
 
     public function store(StoreTweetRequest $request)
     {
-        $tweet = (new StoreTweet)($request);
+        $attributes = $request->validated();
+        if(($request->hasFile('image'))) {
+            $imagePath = $request->file('image')->getPathname();
+            $tweet = (new StoreTweet)($attributes, $imagePath);
+        } else {
+            $tweet = (new StoreTweet)($attributes);
+        }
         $tweetRes = TweetResource::make(
             $tweet->load([
                 'image',
@@ -51,7 +59,13 @@ class TweetController extends Controller
 
     public function update(UpdateTweetRequest $request, Tweet $tweet)
     {
-        (new UpdateTweet)($request, $tweet);
+        $attributes = $request->validated();
+        if($request->hasFile('image')) {
+            $imagePath = $request->file('image')->getPathname();
+            (new UpdateTweet)($attributes, $tweet, $imagePath);
+        } else {
+            (new UpdateTweet)($attributes, $tweet);
+        }
         $tweeterRes = TweetResource::make($tweet->load('image'));
         return $tweeterRes->response()->setStatusCode(Response::HTTP_CREATED);
     }
