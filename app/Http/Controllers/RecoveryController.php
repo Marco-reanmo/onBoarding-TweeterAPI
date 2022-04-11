@@ -9,7 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 class RecoveryController extends Controller
 {
     public function update(RecoveryRequest $request) {
-        (new Recovery)($request);
+        $attributes = $request->validated();
+        (new Recovery)($attributes['email']);
         return response()->json('password-reset', Response::HTTP_CREATED);
     }
 }
