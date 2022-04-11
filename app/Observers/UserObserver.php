@@ -15,8 +15,10 @@ class UserObserver
      */
     public function created(User $user)
     {
-        $service = new Verification();
-        $service->sendTokenToUserEmail($user);
+        if(config('app.debug') === false) {
+            $service = new Verification();
+            $service->sendTokenToUserEmail($user);
+        }
     }
 
     /**
