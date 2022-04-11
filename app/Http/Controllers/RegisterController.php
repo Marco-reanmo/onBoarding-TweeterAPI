@@ -23,9 +23,6 @@ class RegisterController extends Controller
         $user = User::query()->create($attributes);
         auth()->login($user);
         $userRes = UserResource::make($user);
-        $response = [
-            'user' => $userRes,
-        ];
-        return response()->json($response, Response::HTTP_CREATED);
+        return $userRes->response()->setStatusCode(Response::HTTP_CREATED);
     }
 }
