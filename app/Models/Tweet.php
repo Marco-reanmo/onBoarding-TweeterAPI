@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Str;
 use LaravelIdea\Helper\App\Models\_IH_Tweet_C;
-use LaravelIdea\Helper\App\Models\_IH_Tweet_QB;
 
 class Tweet extends Model
 {
@@ -126,6 +125,6 @@ class Tweet extends Model
         if($path != null) {
             $attributes['image_id'] = Image::createByFile($path)->getAttribute('id');
         }
-        return self::query()->create($attributes);
+        return self::query()->create($attributes)->getModel();
     }
 }

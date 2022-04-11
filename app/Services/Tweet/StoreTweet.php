@@ -4,13 +4,10 @@ namespace App\Services\Tweet;
 
 use App\Http\Requests\StoreTweetRequest;
 use App\Models\Tweet;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use LaravelIdea\Helper\App\Models\_IH_Tweet_QB;
 
 class StoreTweet
 {
-    public function __invoke(StoreTweetRequest $request): Model|_IH_Tweet_QB|Builder|\App\Models\Tweet
+    public function __invoke(StoreTweetRequest $request): Tweet
     {
         $attributes = $request->validated();
         if(($request->hasFile('image'))) {

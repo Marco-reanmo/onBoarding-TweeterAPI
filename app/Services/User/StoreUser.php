@@ -5,14 +5,11 @@ namespace App\Services\User;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Image;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use LaravelIdea\Helper\App\Models\_IH_User_QB;
 
 class StoreUser
 {
-    public function __invoke(RegisterRequest $request): Model|_IH_User_QB|Builder|User
+    public function __invoke(RegisterRequest $request): User
     {
         $attributes = $request->validated();
         $attributes['password'] = bcrypt($attributes['password']);
@@ -22,6 +19,8 @@ class StoreUser
                 $request->file('profile_picture')->getPathname()
             )->getAttribute('id');
         }
-        return User::query()->create($attributes);
+        return User::query()
+            ->create($attributes)
+            ->getModel();
     }
 }
