@@ -10,23 +10,11 @@ class LoginController extends Controller
 {
     public function store(LoginRequest $request) {
         $attributes = $request->validated();
-
         if(!auth()->attempt($attributes)) {
             return response()->json([], Response::HTTP_FORBIDDEN);
         }
-
         $user = auth()->user();
-        $uuid = $user->getAttribute('uuid');
-
-        $response = [
-            'user' => UserResource::make($user),
-            'links' => [
-                'home' => 'api/tweets',
-                'myTweets' => 'api/tweets?user=' . $uuid,
-                'settings' => 'api/users/' . $uuid
-            ]
-        ];
-
-        return response()->json($response, Response::HTTP_OK);
+        $userRes = UserResource::make($user);
+        return $userRes->response()->setStatusCode(Response::HTTP_OK);
     }
 }

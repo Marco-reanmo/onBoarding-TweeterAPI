@@ -13,7 +13,7 @@ class UpdateUserRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -23,14 +23,16 @@ class UpdateUserRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'forename' => ['required', 'min:3', 'max:255', 'alpha'],
-            'surname' => ['required', 'min:3', 'max:255', 'alpha'],
+            'forename' => ['min:3', 'max:255', 'alpha'],
+            'surname' => ['min:3', 'max:255', 'alpha'],
             'profile_picture' => ['image'],
-            'email' => ['required', 'max:255', 'email', Rule::unique('users', 'email')->ignore($this->user())],
-            'old_password' => ['required', 'current_password'],
+            'email' => ['max:255', 'email', Rule::unique('users', 'email')->ignore($this->user())],
+            'old_password' => [Rule::requiredIf(function () {
+                return $this->request->has('password');
+            }), 'current_password'],
             'password' => ['confirmed', Password::defaults()],
         ];
     }

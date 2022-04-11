@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class UpdateTweetRequest extends FormRequest
+class RecoveryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +25,7 @@ class UpdateTweetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'body' => ['required', 'min:3'],
-            'image' => ['image'],
+            'email' => ['required', Rule::exists('Users', 'email')]
         ];
     }
 }

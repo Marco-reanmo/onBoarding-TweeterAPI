@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTweetRequest;
 use App\Http\Requests\UpdateTweetRequest;
+use App\Http\Resources\TweetCollection;
 use App\Http\Resources\TweetResource;
-use App\Models\Image;
 use App\Models\Tweet;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use App\Services\Tweet\DestroyTweet;
+use App\Services\Tweet\StoreTweet;
+use App\Services\Tweet\UpdateTweet;
 use Symfony\Component\HttpFoundation\Response;
 
 class TweetController extends Controller
@@ -21,41 +21,26 @@ class TweetController extends Controller
 
     public function index()
     {
-        $currentUser = auth()->user();
-        $relevantIds = $currentUser->followedBy()->pluck('users.id');
-        $relevantIds[] = $currentUser->getAttribute('id');
-        $tweets = Tweet::with(['image', 'author.profile_picture'])
-            ->whereIn('user_id', $relevantIds)
-            ->where('parent_id', '=', null)
-            ->filter(request(['search', 'user']))
-            ->orderBy('created_at', 'desc')
-            ->simplePaginate(10)
-            ->withQueryString();
-        $tweetRes = TweetResource::collection($tweets)
-            ->additional([
-                'links' => $currentUser->getMenuLinks()
-            ]);
+        $tweets = auth()->user()->newsfeed();
+        $tweetRes = TweetCollection::make($tweets);
         return $tweetRes->response()->setStatusCode(Response::HTTP_OK);
     }
 
     public function store(StoreTweetRequest $request)
     {
         $attributes = $request->validated();
-        $currentUser = auth()->user();
-        $attributes['user_id'] = $currentUser->getAttribute('id');
-        $attributes['uuid'] = Str::uuid();
-
         if(($request->hasFile('image'))) {
-            $image['image'] = file_get_contents(($request->file('image')->getPathname()));
-            $attributes['image_id'] = Image::query()->create($image)->id;
+            $imagePath = $request->file('image')->getPathname();
+            $tweet = (new StoreTweet)($attributes, $imagePath);
+        } else {
+            $tweet = (new StoreTweet)($attributes);
         }
-        $tweet = Tweet::query()->create($attributes);
-        $tweetRes = TweetResource::make($tweet->load([
-            'image',
-            'author.profile_picture'
-        ]))->additional([
-                'links' => $currentUser->getMenuLinks()
-            ]);
+        $tweetRes = TweetResource::make(
+            $tweet->load([
+                'image',
+                'author.profile_picture'
+            ])
+        );
         return $tweetRes->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
@@ -74,29 +59,18 @@ class TweetController extends Controller
     {
         $attributes = $request->validated();
         if($request->hasFile('image')) {
-            $data['image'] = file_get_contents($request->file('image')->getPathname());
-            if ($tweet->hasImage()) {
-                Image::query()
-                    ->firstWhere(['id' => $tweet->getAttribute('image_id')])
-                    ->update($data);
-            } else {
-                $attributes['image_id'] = Image::query()->create($data)->getAttribute('id');
-            }
+            $imagePath = $request->file('image')->getPathname();
+            (new UpdateTweet($tweet))($attributes, $imagePath);
+        } else {
+            (new UpdateTweet($tweet))($attributes);
         }
-        $tweet->update($attributes);
-        $tweeterRes = TweetResource::make($tweet->load('image'))
-            ->additional([
-                'links' => auth()->user()->getMenuLinks()
-            ]);
+        $tweeterRes = TweetResource::make($tweet->load('image'));
         return $tweeterRes->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function destroy(Tweet $tweet)
     {
-        $imgId = $tweet->getAttribute('image_id');
-        $storagePath = 'public/images/image' . $imgId . '.png';
-        Storage::delete($storagePath);
-        $tweet->delete();
+        (new DestroyTweet)($tweet);
         return response()->json()->setStatusCode(Response::HTTP_NO_CONTENT);
     }
 }

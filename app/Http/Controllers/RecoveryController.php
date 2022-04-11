@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Services\Recovery;
-use Illuminate\Http\Request;
+use App\Http\Requests\RecoveryRequest;
+use App\Services\Recovery\Recovery;
 use Symfony\Component\HttpFoundation\Response;
 
 class RecoveryController extends Controller
 {
-    public function update(User $user) {
-        $service = new Recovery();
-        $service->handle($user);
-        //return redirect('/api/logout');
+    public function update(RecoveryRequest $request) {
+        $attributes = $request->validated();
+        (new Recovery)($attributes['email']);
         return response()->json('password-reset', Response::HTTP_CREATED);
     }
 }

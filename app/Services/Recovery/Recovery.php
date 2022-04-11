@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Recovery;
 
-use App\Http\Resources\UserResource;
 use App\Jobs\SendRecoveryEmail;
-use App\Jobs\SendVerificationEmail;
 use App\Models\User;
-use App\Models\VerificationToken;
 use Illuminate\Support\Str;
+use function bcrypt;
 
 class Recovery
 {
-    public function handle(User $user) {
+    public function __invoke(string $email) {
+        $user = User::getByEmail($email);
         $generatedPassword = Str::random(8);
         $encryptedNewPassword = bcrypt($generatedPassword);
         $user->update(['password' => $encryptedNewPassword]);

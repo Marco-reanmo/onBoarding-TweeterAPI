@@ -13,7 +13,7 @@ class RegisterRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -23,14 +23,14 @@ class RegisterRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'forename' => ['required', 'min:3', 'max:255', 'alpha'],
             'surname' => ['required', 'min:3', 'max:255', 'alpha'],
             'profile_picture' => ['image'],
             'email' => ['required', 'max:255', 'email', Rule::unique('users', 'email')],
-            'password' => ['confirmed', Password::defaults()],
+            'password' => ['required', 'confirmed', Password::defaults()],
         ];
     }
 }

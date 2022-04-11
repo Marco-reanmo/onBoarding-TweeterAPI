@@ -10,7 +10,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Pagination\Paginator;
 use Laravel\Sanctum\HasApiTokens;
+use LaravelIdea\Helper\App\Models\_IH_Tweet_C;
+use LaravelIdea\Helper\App\Models\_IH_User_C;
 
 class User extends Authenticatable
 {
@@ -55,7 +58,7 @@ class User extends Authenticatable
         return $this->hasOne(Image::class, 'id', 'image_id');
     }
 
-    public function followedBy(): BelongsToMany
+    public function followed(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'followed_id');
     }
@@ -75,12 +78,17 @@ class User extends Authenticatable
         return $this->belongsToMany(Tweet::class, 'likes', 'user_id', 'tweet_id');
     }
 
+    public function verificationToken(): BelongsTo
+    {
+        return $this->belongsTo(VerificationToken::class);
+    }
+
     /**
      * Get the route key for the model.
      *
      * @return string
      */
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'uuid';
     }
@@ -95,7 +103,6 @@ class User extends Authenticatable
         });
     }
 
-
     public function hasProfilePicture() : bool
     {
         return $this->getAttribute('image_id') != null;
@@ -106,11 +113,39 @@ class User extends Authenticatable
         return $this->getAttribute('id') === $model->getAttribute('id');
     }
 
-    public function getMenuLinks() {
+    public function getMenuLinks(): array
+    {
         return [
             'home' => 'api/tweets',
             'myTweets' => 'api/tweets?user=' . $this->getAttribute('uuid'),
             'settings' => 'api/users/' . $this->getAttribute('uuid')
         ];
+    }
+
+    public static function getByEmail(string $email): User
+    {
+        return self::query()
+            ->firstWhere('email', '=', $email);
+    }
+
+    public function newsfeed(): Paginator|array|_IH_Tweet_C
+    {
+        $relevantIds = $this->getFollowedIds();
+        $relevantIds[] = $this->getAttribute('id');
+        return Tweet::getByIds($relevantIds);
+    }
+
+    public function getFollowedIds(): array
+    {
+        return $this->followed()->pluck('users.id')->toArray();
+    }
+
+    public function getOtherUsers(): Paginator|array|_IH_User_C
+    {
+        return self::with('profile_picture')
+            ->whereNot('id', $this->getAttribute('id'))
+            ->filter(request(['search']))
+            ->simplePaginate(10)
+            ->withQueryString();
     }
 }

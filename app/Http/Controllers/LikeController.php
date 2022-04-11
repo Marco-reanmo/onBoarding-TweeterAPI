@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
 use App\Models\Tweet;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class LikeController extends Controller

@@ -22,4 +22,18 @@ class Image extends Model
         return $this->belongsTo(Tweet::class);
     }
 
+    public static function createByFile(string $path): Image
+    {
+        return self::query()
+            ->create([
+                'image' => file_get_contents(($path))
+            ])->getModel();
+    }
+
+    public function updateByFile(string $path): bool
+    {
+        return $this->update([
+            'image' => file_get_contents(($path))
+        ]);
+    }
 }

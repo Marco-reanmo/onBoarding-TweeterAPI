@@ -4,35 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
-use App\Models\Image;
-use App\Models\User;
-use App\Services\Verification;
-use Illuminate\Support\Str;
+use App\Services\User\StoreUser;
 use Symfony\Component\HttpFoundation\Response;
 
 class RegisterController extends Controller
 {
     public function store(RegisterRequest $request) {
         $attributes = $request->validated();
-
-        $attributes['password'] = bcrypt($attributes['password']);
-        $attributes['uuid'] = Str::uuid();
-
-        if(($request->hasFile('profile_picture'))) {
-            $image['image'] = file_get_contents(($request->file('profile_picture')->getPathname()));
-            $attributes['image_id'] = Image::query()->create($image)->id;
+        if($request->hasFile('profile_picture')) {
+            $imagePath = $request->file('profile_picture')->getPathname();
+            $user = (new StoreUser)($attributes, $imagePath);
+        } else {
+            $user = (new StoreUser)($attributes);
         }
-
-        $user = User::query()->create($attributes);
-
         auth()->login($user);
-
         $userRes = UserResource::make($user);
-
-        $response = [
-            'user' => $userRes,
-        ];
-
-        return response()->json($response, Response::HTTP_CREATED);
+        return $userRes->response()->setStatusCode(Response::HTTP_CREATED);
     }
 }
