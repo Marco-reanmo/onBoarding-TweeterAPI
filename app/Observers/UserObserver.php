@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Models\User;
-use App\Services\Verification;
+use App\Services\Verification\Verification;
 
 class UserObserver
 {

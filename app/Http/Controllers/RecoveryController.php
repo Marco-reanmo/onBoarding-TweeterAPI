@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RecoveryRequest;
 use App\Models\User;
-use App\Services\Recovery;
+use App\Services\Recovery\Recovery;
 use Symfony\Component\HttpFoundation\Response;
 
 class RecoveryController extends Controller

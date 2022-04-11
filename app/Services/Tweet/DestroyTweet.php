@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Tweet;
 
 use App\Models\Tweet;
 use Illuminate\Support\Facades\Storage;

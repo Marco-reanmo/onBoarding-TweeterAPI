@@ -7,9 +7,9 @@ use App\Http\Requests\UpdateTweetRequest;
 use App\Http\Resources\TweetCollection;
 use App\Http\Resources\TweetResource;
 use App\Models\Tweet;
-use App\Services\DestroyTweet;
-use App\Services\StoreTweet;
-use App\Services\UpdateTweet;
+use App\Services\Tweet\DestroyTweet;
+use App\Services\Tweet\StoreTweet;
+use App\Services\Tweet\UpdateTweet;
 use Symfony\Component\HttpFoundation\Response;
 
 class TweetController extends Controller

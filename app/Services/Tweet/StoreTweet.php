@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Tweet;
 
 use App\Http\Requests\StoreTweetRequest;
 use App\Models\Tweet;

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Recovery;
 
 use App\Jobs\SendRecoveryEmail;
 use App\Models\User;
 use Illuminate\Support\Str;
+use function bcrypt;
 
 class Recovery
 {

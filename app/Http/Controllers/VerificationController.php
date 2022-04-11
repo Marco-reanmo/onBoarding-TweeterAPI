@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\VerificationToken;
-use App\Services\Verification;
+use App\Services\Verification\Verification;
 use Symfony\Component\HttpFoundation\Response;
 
 class VerificationController extends Controller

@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Verification;
 
 use App\Http\Resources\UserResource;
 use App\Jobs\SendVerificationEmail;
 use App\Models\User;
 use App\Models\VerificationToken;
 use Illuminate\Support\Str;
+use function now;
 
 class Verification {
 
