@@ -3,14 +3,12 @@
 namespace App\Services\User;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
+use App\Services\Storage\DeleteImage;
 
 class DestroyUser
 {
     public function __invoke(User $user) {
-        $imgId = $user->getAttribute('image_id');
-        $storagePath = 'public/images/image' . $imgId . '.png';
-        Storage::delete($storagePath);
+        (new DeleteImage)($user);
         $user->delete();
     }
 }
