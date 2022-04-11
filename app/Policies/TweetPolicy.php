@@ -77,7 +77,7 @@ class TweetPolicy
      */
     public function restore(User $user, Tweet $tweet)
     {
-        //
+        return false;
     }
 
     /**
@@ -89,6 +89,6 @@ class TweetPolicy
      */
     public function forceDelete(User $user, Tweet $tweet)
     {
-        //
+        return false;
     }
 }
