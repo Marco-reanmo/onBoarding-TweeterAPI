@@ -18,6 +18,6 @@ class LoginController extends Controller
             ->additional([
                 'links' => $user->getMenuLinks()
             ]);
-        return response()->json($userRes, Response::HTTP_OK);
+        return $userRes->response()->setStatusCode(Response::HTTP_OK);
     }
 }
