@@ -130,9 +130,9 @@ class User extends Authenticatable
             ->firstWhere('email', '=', $email);
     }
 
-    public function getFollowedIds(): Collection
+    public function getFollowedIds(): array
     {
-        return $this->followed()->pluck('users.id');
+        return $this->followed()->pluck('users.id')->toArray();
     }
 
     public function getOtherUsers(): Paginator|array|_IH_User_C
