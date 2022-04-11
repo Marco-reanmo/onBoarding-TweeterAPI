@@ -34,8 +34,6 @@ Route::middleware('guest')->group(function () {
     Route::put('/reset-pwd', [RecoveryController::class, 'update']);
 });
 
-Route::put('/verify/{verification_token:token}', [VerificationController::class, 'update']);
-
 /*
 |--------------------------------------------------------------------------
 | PRIVATE
@@ -49,4 +47,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('tweets', TweetController::class);
     Route::get('/tweets/{tweet:uuid}/likes', [LikeController::class, 'show']);
     Route::post('/tweets/{tweet:uuid}/likes', [LikeController::class, 'store']);
+    Route::put('/verify/{verification_token:token}', [VerificationController::class, 'update']);
 });
