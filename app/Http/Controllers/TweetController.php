@@ -21,10 +21,7 @@ class TweetController extends Controller
 
     public function index()
     {
-        $currentUser = auth()->user();
-        $relevantIds = $currentUser->getFollowedIds();
-        $relevantIds[] = $currentUser->getAttribute('id');
-        $tweets = Tweet::getByIds($relevantIds);
+        $tweets = auth()->user()->newsfeed();
         $tweetRes = TweetCollection::make($tweets);
         return $tweetRes->response()->setStatusCode(Response::HTTP_OK);
     }

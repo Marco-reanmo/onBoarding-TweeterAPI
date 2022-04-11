@@ -130,6 +130,12 @@ class User extends Authenticatable
             ->firstWhere('email', '=', $email);
     }
 
+    public function newsfeed() {
+        $relevantIds = $this->getFollowedIds();
+        $relevantIds[] = $this->getAttribute('id');
+        return Tweet::getByIds($relevantIds);
+    }
+
     public function getFollowedIds(): array
     {
         return $this->followed()->pluck('users.id')->toArray();
