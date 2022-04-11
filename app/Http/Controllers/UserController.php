@@ -29,7 +29,13 @@ class UserController extends Controller
     }
 
     public function update(UpdateUserRequest $request, User $user) {
-        (new UpdateUser)($request, $user);
+        $attributes = $request->validated();
+        if($request->hasFile('profile_picture')) {
+            $imagePath = $request->file('profile_picture')->getPathname();
+            (new UpdateUser)($attributes, $user, $imagePath);
+        } else {
+            (new UpdateUser)($attributes, $user);
+        }
         $userResource = UserResource::make($user->load('profile_picture'));
         return $userResource->response()->setStatusCode(Response::HTTP_CREATED);
     }

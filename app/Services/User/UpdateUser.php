@@ -8,14 +8,12 @@ use App\Models\User;
 
 class UpdateUser
 {
-    public function __invoke(UpdateUserRequest $request, User $user) {
-        $attributes = $request->validated();
+    public function __invoke(array $attributes, User $user, string $path = null) {
         unset($attributes['old_password']);
         if(isset($attributes['password'])) {
             $attributes['password'] = bcrypt($attributes['password']);
         }
-        if($request->hasFile('profile_picture')) {
-            $path = $request->file('profile_picture')->getPathname();
+        if($path != null) {
             if ($user->hasProfilePicture()) {
                 $user->profile_picture()
                     ->first()
