@@ -8,7 +8,6 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\User\DestroyUser;
 use App\Services\User\UpdateUser;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
