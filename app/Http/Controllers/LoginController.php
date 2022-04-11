@@ -14,10 +14,7 @@ class LoginController extends Controller
             return response()->json([], Response::HTTP_FORBIDDEN);
         }
         $user = auth()->user();
-        $userRes = UserResource::make($user)
-            ->additional([
-                'links' => $user->getMenuLinks()
-            ]);
+        $userRes = UserResource::make($user);
         return $userRes->response()->setStatusCode(Response::HTTP_OK);
     }
 }

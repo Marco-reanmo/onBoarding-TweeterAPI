@@ -31,4 +31,11 @@ class TweetResource extends JsonResource
             ]
         ];
     }
+
+    public function with($request): array
+    {
+        return [
+            'links' => auth()->user()->getMenuLinks()
+        ];
+    }
 }

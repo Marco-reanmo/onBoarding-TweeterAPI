@@ -22,10 +22,7 @@ class RegisterController extends Controller
         }
         $user = User::query()->create($attributes);
         auth()->login($user);
-        $userRes = UserResource::make($user)
-            ->additional([
-                'links' => $user->getMenuLinks()
-            ]);
+        $userRes = UserResource::make($user);
         return $userRes->response()->setStatusCode(Response::HTTP_CREATED);
     }
 }

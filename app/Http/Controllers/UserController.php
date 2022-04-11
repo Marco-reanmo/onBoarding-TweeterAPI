@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\Image;
 use App\Models\User;
@@ -19,18 +20,12 @@ class UserController extends Controller
     public function index() {
         $currentUser = auth()->user();
         $users = $currentUser->getOtherUsers();
-        $usersCollection = UserResource::collection($users)
-            ->additional([
-                'links' => $currentUser->getMenuLinks()
-            ]);
+        $usersCollection = UserCollection::make($users);
         return $usersCollection->response()->setStatusCode(Response::HTTP_OK);
     }
 
     public function show(User $user) {
-        $userResource = UserResource::make($user->load('profile_picture'))
-            ->additional([
-                'links' => auth()->user()->getMenuLinks()
-            ]);
+        $userResource = UserResource::make($user->load('profile_picture'));
         return $userResource->response()->setStatusCode(Response::HTTP_OK);
     }
 
@@ -51,11 +46,7 @@ class UserController extends Controller
             }
         }
         $user->update($attributes);
-        $userResource = UserResource::make($user
-            ->load('profile_picture'))
-            ->additional([
-                'links' => $user->getMenuLinks()
-            ]);
+        $userResource = UserResource::make($user->load('profile_picture'));
         return $userResource->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
@@ -70,5 +61,4 @@ class UserController extends Controller
                 ]
             ], Response::HTTP_OK);
     }
-
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTweetRequest;
 use App\Http\Requests\UpdateTweetRequest;
+use App\Http\Resources\TweetCollection;
 use App\Http\Resources\TweetResource;
 use App\Models\Image;
 use App\Models\Tweet;
@@ -24,10 +25,7 @@ class TweetController extends Controller
         $relevantIds = $currentUser->getFollowedIds();
         $relevantIds[] = $currentUser->getAttribute('id');
         $tweets = Tweet::getByIds($relevantIds);
-        $tweetRes = TweetResource::collection($tweets)
-            ->additional([
-                'links' => $currentUser->getMenuLinks()
-            ]);
+        $tweetRes = TweetCollection::make($tweets);
         return $tweetRes->response()->setStatusCode(Response::HTTP_OK);
     }
 
@@ -48,9 +46,7 @@ class TweetController extends Controller
                 'image',
                 'author.profile_picture'
             ])
-        )->additional([
-            'links' => $currentUser->getMenuLinks()
-        ]);
+        );
         return $tweetRes->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
@@ -79,10 +75,7 @@ class TweetController extends Controller
             }
         }
         $tweet->update($attributes);
-        $tweeterRes = TweetResource::make($tweet->load('image'))
-            ->additional([
-                'links' => auth()->user()->getMenuLinks()
-            ]);
+        $tweeterRes = TweetResource::make($tweet->load('image'));
         return $tweeterRes->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
