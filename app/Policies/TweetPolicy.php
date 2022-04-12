@@ -53,7 +53,7 @@ class TweetPolicy
      */
     public function update(User $user, Tweet $tweet)
     {
-        return $user->isSameUserAs($tweet->author()->first());
+        return $user->is($tweet->author()->first());
     }
 
     /**
@@ -65,7 +65,7 @@ class TweetPolicy
      */
     public function delete(User $user, Tweet $tweet)
     {
-        return $user->isSameUserAs($tweet->author()->first());
+        return $user->is($tweet->author()->first());
     }
 
     /**

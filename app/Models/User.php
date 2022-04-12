@@ -108,11 +108,6 @@ class User extends Authenticatable
         return $this->getAttribute('image_id') != null;
     }
 
-    public function isSameUserAs(User $model) : bool
-    {
-        return $this->getAttribute('id') === $model->getAttribute('id');
-    }
-
     public function getMenuLinks(): array
     {
         return [

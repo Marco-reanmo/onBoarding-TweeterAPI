@@ -53,7 +53,7 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        return $user->isSameUserAs($model) ? Response::allow() : Response::deny();
+        return $user->is($model) ? Response::allow() : Response::deny();
     }
 
     /**
@@ -65,7 +65,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        return $user->isSameUserAs($model) ? Response::allow() : Response::deny();
+        return $user->is($model) ? Response::allow() : Response::deny();
     }
 
     /**
@@ -93,6 +93,6 @@ class UserPolicy
     }
 
     public function follow(User $user, User $model) {
-        return !($user->isSameUserAs($model));
+        return !($user->is($model));
     }
 }
