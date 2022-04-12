@@ -29,12 +29,8 @@ class TweetController extends Controller
     public function store(StoreTweetRequest $request)
     {
         $attributes = $request->validated();
-        if(($request->hasFile('image'))) {
-            $imagePath = $request->file('image')->getPathname();
-            $tweet = (new StoreTweet)($attributes, $imagePath);
-        } else {
-            $tweet = (new StoreTweet)($attributes);
-        }
+        $imagePath = $request->hasFile('image') ? $request->file('image')->getPathname() : null;
+        $tweet = (new StoreTweet)($attributes, $imagePath);
         $tweetRes = TweetResource::make(
             $tweet->load([
                 'image',
