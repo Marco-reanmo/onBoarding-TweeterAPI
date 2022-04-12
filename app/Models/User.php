@@ -117,10 +117,9 @@ class User extends Authenticatable
         ];
     }
 
-    public static function getByEmail(string $email): User
+    public static function scopeEmail($query, string $email)
     {
-        return self::query()
-            ->firstWhere('email', '=', $email);
+        return $query->firstWhere('email', '=', $email);
     }
 
     public function newsfeed(): Paginator|array|_IH_Tweet_C

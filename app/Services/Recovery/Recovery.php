@@ -10,7 +10,7 @@ use function bcrypt;
 class Recovery
 {
     public function __invoke(string $email) {
-        $user = User::getByEmail($email);
+        $user = User::query()->email($email);
         $generatedPassword = Str::random(8);
         $encryptedNewPassword = bcrypt($generatedPassword);
         $user->update(['password' => $encryptedNewPassword]);
