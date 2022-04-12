@@ -117,7 +117,8 @@ class Tweet extends Model
             ->withQueryString();
     }
 
-    public static function getNewsfeedFor(User $user) {
+    public static function getNewsfeedFor(User $user): Paginator|array|_IH_Tweet_C
+    {
         $relevantIds = $user->getFollowedIds();
         $relevantIds[] = $user->getAttribute('id');
         return self::getByIds($relevantIds);
