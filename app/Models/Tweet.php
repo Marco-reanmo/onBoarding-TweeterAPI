@@ -116,4 +116,10 @@ class Tweet extends Model
             ->simplePaginate(10)
             ->withQueryString();
     }
+
+    public static function getNewsfeedFor(User $user) {
+        $relevantIds = $user->getFollowedIds();
+        $relevantIds[] = $user->getAttribute('id');
+        return self::getByIds($relevantIds);
+    }
 }
