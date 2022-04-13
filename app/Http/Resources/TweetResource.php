@@ -21,7 +21,7 @@ class TweetResource extends JsonResource
                 'image' => new ImageResource($this->whenLoaded('image')),
                 'body' => $this->body,
                 'comments_count' => $this->getCommentCount(),
-                'comments' => TweetResource::collection($this->whenLoaded('allComments')),
+                'comments' => TweetResource::collection($this->whenLoaded('comments')),
                 'human_created_at' => $this->created_at->diffForHumans(),
                 'like_count' => $this->when(
                     isset($this->users_who_liked_count),

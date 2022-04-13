@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Str;
 use LaravelIdea\Helper\App\Models\_IH_Tweet_C;
 
 class Tweet extends Model
@@ -27,22 +26,12 @@ class Tweet extends Model
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(Tweet::class);
-    }
-
-    public function allParents(): BelongsTo
-    {
-        return $this->parent()->with('allParents');
+        return $this->belongsTo(Tweet::class)->with('parent');
     }
 
     public function comments(): HasMany
     {
-        return $this->hasMany(Tweet::class, 'parent_id');
-    }
-
-    public function allComments(): HasMany
-    {
-        return $this->comments()->with(['allComments.author.profile_picture', 'allComments.image']);
+        return $this->hasMany(Tweet::class, 'parent_id')->with('comments');
     }
 
     public function image(): HasOne
@@ -52,10 +41,10 @@ class Tweet extends Model
 
     public function getCommentCount(): int
     {
-        $allComments = $this->allComments()->get();
+        $allComments = $this->comments()->withCount('comments')->get();
         $count = $allComments->count();
         foreach ($allComments as $comment) {
-            $count += $comment->getCommentCount();
+            $count += $comment->all_comments_count;
         }
         return $count;
     }

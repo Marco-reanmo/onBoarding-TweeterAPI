@@ -45,8 +45,8 @@ class TweetController extends Controller
         $tweetRes = TweetResource::make($tweet->load([
             'image',
             'author.profile_picture',
-            'allComments.author.profile_picture',
-            'allComments.image'
+            'comments.author.profile_picture',
+            'comments.image'
         ]));
         return $tweetRes->response()->setStatusCode(Response::HTTP_OK);
     }
