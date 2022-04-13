@@ -44,7 +44,7 @@ class Tweet extends Model
         $allComments = $this->comments()->withCount('comments')->get();
         $count = $allComments->count();
         foreach ($allComments as $comment) {
-            $count += $comment->all_comments_count;
+            $count += $comment->comments_count;
         }
         return $count;
     }
