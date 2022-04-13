@@ -23,7 +23,10 @@ class TweetResource extends JsonResource
                 'comments_count' => $this->getCommentCount(),
                 'comments' => TweetResource::collection($this->whenLoaded('allComments')),
                 'human_created_at' => $this->created_at->diffForHumans(),
-                'like count' => $this->numberOfLikes()
+                'like_count' => $this->when(
+                    isset($this->users_who_liked_count),
+                    $this->users_who_liked_count
+                )
             ],
             'links' => [
                 'tweet' => 'api/tweets/' . $this->uuid,

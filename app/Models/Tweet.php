@@ -70,11 +70,6 @@ class Tweet extends Model
         return $this->belongsToMany(User::class, 'likes', 'tweet_id', 'user_id');
     }
 
-    public function numberOfLikes(): int
-    {
-        return $this->usersWhoLiked()->count();
-    }
-
     /**
      * Get the route key for the model.
      *
@@ -111,6 +106,7 @@ class Tweet extends Model
         return self::with(['image', 'author.profile_picture'])
             ->whereIn('user_id', $ids)
             ->where('parent_id', '=', null)
+            ->withCount('usersWhoLiked')
             ->filter(request(['search', 'user']))
             ->orderBy('created_at', 'desc')
             ->simplePaginate(10)
