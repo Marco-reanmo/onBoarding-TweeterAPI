@@ -21,7 +21,11 @@ class TweetController extends Controller
 
     public function index()
     {
-        $tweets = Tweet::getNewsfeedFor(auth()->user());
+        $tweets = Tweet::getNewsfeedFor(auth()->user())
+            ->loadCount([
+                'comments',
+                'usersWhoLiked'
+            ]);
         $tweetRes = TweetCollection::make($tweets);
         return $tweetRes->response()->setStatusCode(Response::HTTP_OK);
     }
@@ -42,12 +46,17 @@ class TweetController extends Controller
 
     public function show(Tweet $tweet)
     {
-        $tweetRes = TweetResource::make($tweet->load([
-            'image',
-            'author.profile_picture',
-            'comments.author.profile_picture',
-            'comments.image'
-        ]));
+        $tweetRes = TweetResource::make(
+            $tweet->load([
+                'image',
+                'author.profile_picture',
+                'comments.author.profile_picture',
+                'comments.image'
+            ])->loadCount([
+                'comments',
+                'usersWhoLiked'
+            ])
+        );
         return $tweetRes->response()->setStatusCode(Response::HTTP_OK);
     }
 

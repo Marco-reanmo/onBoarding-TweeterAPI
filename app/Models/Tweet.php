@@ -31,7 +31,13 @@ class Tweet extends Model
 
     public function comments(): HasMany
     {
-        return $this->hasMany(Tweet::class, 'parent_id')->with('comments');
+        return $this->hasMany(Tweet::class, 'parent_id')
+            ->with([
+                'comments.image',
+                'comments.author.profile_picture',
+            ])->withCount([
+                'usersWhoLiked'
+            ]);
     }
 
     public function image(): HasOne
@@ -39,7 +45,9 @@ class Tweet extends Model
         return $this->hasOne(Image::class, 'id', 'image_id');
     }
 
-    public function getCommentCount(): int
+    /* low performance
+     *
+     * public function getCommentCount(): int
     {
         $allComments = $this->comments()->withCount('comments')->get();
         $count = $allComments->count();
@@ -47,7 +55,7 @@ class Tweet extends Model
             $count += $comment->comments_count;
         }
         return $count;
-    }
+    }*/
 
     public function author(): BelongsTo
     {
@@ -95,7 +103,6 @@ class Tweet extends Model
         return self::with(['image', 'author.profile_picture'])
             ->whereIn('user_id', $ids)
             ->where('parent_id', '=', null)
-            ->withCount('usersWhoLiked')
             ->filter(request(['search', 'user']))
             ->orderBy('created_at', 'desc')
             ->simplePaginate(10)
