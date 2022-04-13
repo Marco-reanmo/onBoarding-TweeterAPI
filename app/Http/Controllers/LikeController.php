@@ -9,13 +9,13 @@ use Symfony\Component\HttpFoundation\Response;
 class LikeController extends Controller
 {
     public function show(Tweet $tweet) {
-        $usersThatLikedTheTweet = $tweet->likes()->get();
+        $usersThatLikedTheTweet = $tweet->usersWhoLiked()->get();
         $userRes = UserResource::collection($usersThatLikedTheTweet->load('profile_picture'));
         return $userRes->response()->setStatusCode(Response::HTTP_OK);
     }
 
     public function store(Tweet $tweet) {
-        $tweet->likes()->toggle(auth()->user());
+        $tweet->usersWhoLiked()->toggle(auth()->user());
         return response()->json()->setStatusCode(Response::HTTP_OK);
     }
 }

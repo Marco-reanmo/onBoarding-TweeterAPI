@@ -65,14 +65,14 @@ class Tweet extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function likes(): BelongsToMany
+    public function usersWhoLiked(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'likes', 'tweet_id', 'user_id');
     }
 
     public function numberOfLikes(): int
     {
-        return $this->likes()->count();
+        return $this->usersWhoLiked()->count();
     }
 
     /**
