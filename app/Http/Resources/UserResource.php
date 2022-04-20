@@ -21,7 +21,7 @@ class UserResource extends JsonResource
             'data' => [
                 'forename' => $this->forename,
                 'surname' => $this->surname,
-                'profile_picture' => new ImageResource($this->whenLoaded('profile_picture'))
+                'profile_picture' => new ImageResource($this->whenLoaded('profilePicture'))
             ],
             'links' => [
                 'profile' => 'api/users/' . $this->uuid,
