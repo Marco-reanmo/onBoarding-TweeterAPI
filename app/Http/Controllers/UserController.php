@@ -24,7 +24,7 @@ class UserController extends Controller
     }
 
     public function show(User $user) {
-        $userResource = UserResource::make($user->load('profile_picture'));
+        $userResource = UserResource::make($user->load('profilePicture'));
         return $userResource->response()->setStatusCode(Response::HTTP_OK);
     }
 
@@ -36,7 +36,7 @@ class UserController extends Controller
         } else {
             (new UpdateUser($user))($attributes);
         }
-        $userResource = UserResource::make($user->load('profile_picture'));
+        $userResource = UserResource::make($user->load('profilePicture'));
         return $userResource->response()->setStatusCode(Response::HTTP_CREATED);
     }
 

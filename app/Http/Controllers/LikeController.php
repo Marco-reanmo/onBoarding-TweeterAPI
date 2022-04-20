@@ -10,7 +10,7 @@ class LikeController extends Controller
 {
     public function show(Tweet $tweet) {
         $usersThatLikedTheTweet = $tweet->usersWhoLiked()->get();
-        $userRes = UserResource::collection($usersThatLikedTheTweet->load('profile_picture'));
+        $userRes = UserResource::collection($usersThatLikedTheTweet->load('profilePicture'));
         return $userRes->response()->setStatusCode(Response::HTTP_OK);
     }
 

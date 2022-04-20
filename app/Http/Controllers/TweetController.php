@@ -38,7 +38,7 @@ class TweetController extends Controller
         $tweetRes = TweetResource::make(
             $tweet->load([
                 'image',
-                'author.profile_picture'
+                'author.profilePicture'
             ])
         );
         return $tweetRes->response()->setStatusCode(Response::HTTP_CREATED);
@@ -49,8 +49,8 @@ class TweetController extends Controller
         $tweetRes = TweetResource::make(
             $tweet->load([
                 'image',
-                'author.profile_picture',
-                'comments.author.profile_picture',
+                'author.profilePicture',
+                'comments.author.profilePicture',
                 'comments.image'
             ])->loadCount([
                 'comments',

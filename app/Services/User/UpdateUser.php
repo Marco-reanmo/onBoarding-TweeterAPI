@@ -21,7 +21,7 @@ class UpdateUser
         }
         if($imagePath != null) {
             if ($this->user->hasProfilePicture()) {
-                (new UpdateImage)($imagePath, $this->user->profile_picture()->getModel());
+                (new UpdateImage)($imagePath, $this->user->profilePicture()->getModel());
             } else {
                 (new StoreImage)($imagePath, $this->user);
             }

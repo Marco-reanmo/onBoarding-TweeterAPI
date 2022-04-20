@@ -39,7 +39,7 @@ class UserObserver
      */
     public function deleted(User $user)
     {
-        $user->profile_picture()->delete();
+        $user->profilePicture()->delete();
     }
 
     /**

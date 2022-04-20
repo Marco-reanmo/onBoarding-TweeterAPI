@@ -34,7 +34,7 @@ class Tweet extends Model
         return $this->hasMany(Tweet::class, 'parent_id')
             ->with([
                 'comments.image',
-                'comments.author.profile_picture',
+                'comments.author.profilePicture',
             ])->withCount([
                 'usersWhoLiked'
             ]);
@@ -88,7 +88,7 @@ class Tweet extends Model
 
     public static function getByIds(array $ids): Paginator|array|_IH_Tweet_C
     {
-        return self::with(['image', 'author.profile_picture'])
+        return self::with(['image', 'author.profilePicture'])
             ->whereIn('user_id', $ids)
             ->where('parent_id', '=', null)
             ->filter(request(['search', 'user']))

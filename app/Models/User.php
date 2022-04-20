@@ -52,7 +52,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function profile_picture(): MorphOne
+    public function profilePicture(): MorphOne
     {
         return $this->morphOne(Image::class, 'imageable');
     }
@@ -128,7 +128,7 @@ class User extends Authenticatable
 
     public function getOtherUsers(): Paginator|array|_IH_User_C
     {
-        return self::with('profile_picture')
+        return self::with('profilePicture')
             ->whereNot('id', $this->getAttribute('id'))
             ->filter(request(['search']))
             ->simplePaginate(10)
