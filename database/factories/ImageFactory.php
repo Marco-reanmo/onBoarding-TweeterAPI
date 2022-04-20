@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Tweet;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Collection;
 
@@ -26,8 +28,19 @@ class ImageFactory extends Factory
      */
     public function definition()
     {
+        $imageable = $this->imageable();
         return [
-            'image' => $this->binary
+            'image' => $this->binary,
+            'imageable_id' => $imageable::factory(),
+            'imageable_type' => $imageable
         ];
+    }
+
+    public function imageable()
+    {
+        return $this->faker->randomElement([
+            User::class,
+            Tweet::class
+        ]);
     }
 }

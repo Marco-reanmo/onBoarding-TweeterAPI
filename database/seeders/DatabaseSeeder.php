@@ -17,9 +17,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Tweet::factory(10)
-            ->has(User::factory(2), 'likes')
+        Tweet::factory(10)
+            ->has(User::factory(2), 'usersWhoLiked')
             ->has(Tweet::factory(2), 'comments')
             ->create();
+        Image::factory(5)->create();
     }
 }

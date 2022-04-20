@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Pagination\Paginator;
 use LaravelIdea\Helper\App\Models\_IH_Tweet_C;
 
@@ -40,22 +40,10 @@ class Tweet extends Model
             ]);
     }
 
-    public function image(): HasOne
+    public function image(): MorphOne
     {
-        return $this->hasOne(Image::class, 'id', 'image_id');
+        return $this->morphOne(Image::class, 'imageable');
     }
-
-    /* low performance
-     *
-     * public function getCommentCount(): int
-    {
-        $allComments = $this->comments()->withCount('comments')->get();
-        $count = $allComments->count();
-        foreach ($allComments as $comment) {
-            $count += $comment->comments_count;
-        }
-        return $count;
-    }*/
 
     public function author(): BelongsTo
     {
@@ -95,7 +83,7 @@ class Tweet extends Model
 
     public function hasImage(): bool
     {
-        return $this->getAttribute('image_id') != null;
+        return $this->image->exists();
     }
 
     public static function getByIds(array $ids): Paginator|array|_IH_Tweet_C

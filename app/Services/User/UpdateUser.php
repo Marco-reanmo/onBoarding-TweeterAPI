@@ -2,7 +2,6 @@
 
 namespace App\Services\User;
 
-use App\Http\Requests\UpdateUserRequest;
 use App\Models\Image;
 use App\Models\User;
 
@@ -14,18 +13,24 @@ class UpdateUser
         $this->user = $user;
     }
 
-    public function __invoke(array $attributes, string $path = null) {
+    public function __invoke(array $attributes, string $imagePath = null) {
         unset($attributes['old_password']);
         if(isset($attributes['password'])) {
             $attributes['password'] = bcrypt($attributes['password']);
         }
-        if($path != null) {
+        if($imagePath != null) {
             if ($this->user->hasProfilePicture()) {
                 $this->user->profile_picture()
                     ->first()
-                    ->updateByFile($path);
+                    ->updateByFile($imagePath);
             } else {
-                $attributes['image_id'] = Image::createByFile($path)->get('id');
+                $imageAttributes = [
+                    'image' => file_get_contents($imagePath),
+                    'imageable_id' => $this->user->getAttribute('id'),
+                    'imageable_type' => $this->user::class
+                ];
+                Image::query()
+                    ->create($imageAttributes);
             }
         }
         $this->user->update($attributes);

@@ -21,7 +21,13 @@ class UpdateTweet
                     ->first()
                     ->updateByFile($imagePath);
             } else {
-                $attributes['image_id'] = Image::createByFile($imagePath)->get('id');
+                $imageAttributes = [
+                    'image' => file_get_contents($imagePath),
+                    'imageable_id' => $this->tweet->getAttribute('id'),
+                    'imageable_type' => $this->tweet::class
+                ];
+                Image::query()
+                    ->create($imageAttributes);
             }
         }
         $this->tweet->update($attributes);

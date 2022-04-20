@@ -12,9 +12,16 @@ class StoreTweet
     {
         $attributes['user_id'] = auth()->user()->getAttribute('id');
         $attributes['uuid'] = Str::uuid();
+        $tweet = Tweet::query()->create($attributes)->getModel();
         if($imagePath != null) {
-            $attributes['image_id'] = Image::createByFile($imagePath)->getAttribute('id');
+            $imageAttributes = [
+                'image' => file_get_contents($imagePath),
+                'imageable_id' => $tweet->getAttribute('id'),
+                'imageable_type' => $tweet::class
+            ];
+            Image::query()
+                ->create($imageAttributes);
         }
-        return Tweet::query()->create($attributes)->getModel();
+        return $tweet;
     }
 }

@@ -12,11 +12,18 @@ class StoreUser
     {
         $attributes['password'] = bcrypt($attributes['password']);
         $attributes['uuid'] = Str::uuid();
-        if($imagePath != null) {
-            $attributes['image_id'] = Image::createByFile($imagePath)->getAttribute('id');
-        }
-        return User::query()
+        $user = User::query()
             ->create($attributes)
             ->getModel();
+        if($imagePath != null) {
+            $imageAttributes = [
+                'image' => file_get_contents($imagePath),
+                'imageable_id' => $user->getAttribute('id'),
+                'imageable_type' => $user::class
+            ];
+            Image::query()
+                ->create($imageAttributes);
+        }
+        return $user;
     }
 }

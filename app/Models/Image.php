@@ -4,30 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Image extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['image'];
+    protected $fillable = ['image', 'imageable_id', 'imageable_type'];
 
-    public function user(): BelongsTo
+    public function imageable(): MorphTo
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function tweet(): BelongsTo
-    {
-        return $this->belongsTo(Tweet::class);
-    }
-
-    public static function createByFile(string $path): Image
-    {
-        return self::query()
-            ->create([
-                'image' => file_get_contents(($path))
-            ])->getModel();
+        return $this->morphTo();
     }
 
     public function updateByFile(string $path): bool

@@ -11,12 +11,8 @@ class RegisterController extends Controller
 {
     public function store(RegisterRequest $request) {
         $attributes = $request->validated();
-        if($request->hasFile('profile_picture')) {
-            $imagePath = $request->file('profile_picture')->getPathname();
-            $user = (new StoreUser)($attributes, $imagePath);
-        } else {
-            $user = (new StoreUser)($attributes);
-        }
+        $imagePath = $request->hasFile('profile_picture') ? $request->file('profile_picture')->getPathname() : null;
+        $user = (new StoreUser)($attributes, $imagePath);
         auth()->login($user);
         $userRes = UserResource::make($user);
         return $userRes->response()->setStatusCode(Response::HTTP_CREATED);
