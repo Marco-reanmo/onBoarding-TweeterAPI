@@ -8,7 +8,7 @@ use App\Services\Storage\DeleteImage;
 class DestroyUser
 {
     public function __invoke(User $user) {
-        (new DeleteImage)($user);
+        (new DeleteImage)($user->profile_picture);
         $user->delete();
     }
 }
