@@ -3,7 +3,7 @@
 namespace App\Services\User;
 
 use App\Models\User;
-use App\Services\Storage\DeleteImage;
+use App\Services\Image\DeleteImage;
 
 class DestroyUser
 {

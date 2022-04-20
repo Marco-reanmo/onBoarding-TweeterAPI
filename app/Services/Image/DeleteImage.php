@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Storage;
+namespace App\Services\Image;
 
 use App\Models\Image;
 use Illuminate\Support\Facades\Storage;
