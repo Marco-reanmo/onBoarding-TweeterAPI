@@ -2,8 +2,8 @@
 
 namespace App\Services\Tweet;
 
-use App\Models\Image;
 use App\Models\Tweet;
+use App\Services\Image\StoreImage;
 use Illuminate\Support\Str;
 
 class StoreTweet
@@ -14,13 +14,7 @@ class StoreTweet
         $attributes['uuid'] = Str::uuid();
         $tweet = Tweet::query()->create($attributes)->getModel();
         if($imagePath != null) {
-            $imageAttributes = [
-                'image' => file_get_contents($imagePath),
-                'imageable_id' => $tweet->getAttribute('id'),
-                'imageable_type' => $tweet::class
-            ];
-            Image::query()
-                ->create($imageAttributes);
+            (new StoreImage)($imagePath, $tweet);
         }
         return $tweet;
     }

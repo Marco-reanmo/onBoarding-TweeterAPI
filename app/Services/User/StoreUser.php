@@ -2,8 +2,8 @@
 
 namespace App\Services\User;
 
-use App\Models\Image;
 use App\Models\User;
+use App\Services\Image\StoreImage;
 use Illuminate\Support\Str;
 
 class StoreUser
@@ -16,13 +16,7 @@ class StoreUser
             ->create($attributes)
             ->getModel();
         if($imagePath != null) {
-            $imageAttributes = [
-                'image' => file_get_contents($imagePath),
-                'imageable_id' => $user->getAttribute('id'),
-                'imageable_type' => $user::class
-            ];
-            Image::query()
-                ->create($imageAttributes);
+            (new StoreImage)($imagePath, $user);
         }
         return $user;
     }
