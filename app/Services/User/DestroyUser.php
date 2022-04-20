@@ -8,7 +8,9 @@ use App\Services\Image\DeleteImage;
 class DestroyUser
 {
     public function __invoke(User $user) {
-        (new DeleteImage)($user->profile_picture);
+        if ($user->hasProfilePicture()) {
+            (new DeleteImage)($user->profilePicture()->getModel());
+        }
         $user->delete();
     }
 }

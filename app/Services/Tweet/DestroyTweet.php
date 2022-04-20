@@ -9,7 +9,9 @@ class DestroyTweet
 {
     public function __invoke(Tweet $tweet)
     {
-        (new DeleteImage)($tweet->image);
+        if ($tweet->hasImage()) {
+            (new DeleteImage)($tweet->image()->getModel());
+        }
         $tweet->delete();
     }
 }

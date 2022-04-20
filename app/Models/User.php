@@ -104,7 +104,7 @@ class User extends Authenticatable
 
     public function hasProfilePicture() : bool
     {
-        return $this->profile_picture->exists();
+        return $this->profilePicture()->exists();
     }
 
     public function getMenuLinks(): array
