@@ -4,6 +4,7 @@ namespace App\Services\User;
 
 use App\Models\User;
 use App\Services\Image\StoreImage;
+use App\Services\Image\UpdateImage;
 
 class UpdateUser
 {
@@ -20,9 +21,7 @@ class UpdateUser
         }
         if($imagePath != null) {
             if ($this->user->hasProfilePicture()) {
-                $this->user->profile_picture()
-                    ->first()
-                    ->updateByFile($imagePath);
+                (new UpdateImage)($imagePath, $this->user->profile_picture()->getModel());
             } else {
                 (new StoreImage)($imagePath, $this->user);
             }

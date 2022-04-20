@@ -4,6 +4,7 @@ namespace App\Services\Tweet;
 
 use App\Models\Tweet;
 use App\Services\Image\StoreImage;
+use App\Services\Image\UpdateImage;
 
 class UpdateTweet
 {
@@ -17,9 +18,7 @@ class UpdateTweet
     {
         if($imagePath != null) {
             if ($this->tweet->hasImage()) {
-                $this->tweet->image()
-                    ->first()
-                    ->updateByFile($imagePath);
+                (new UpdateImage)($imagePath, $this->tweet->image()->getModel());
             } else {
                 (new StoreImage)($imagePath, $this->tweet);
             }
