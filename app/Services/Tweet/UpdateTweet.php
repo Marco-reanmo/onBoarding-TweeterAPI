@@ -2,8 +2,8 @@
 
 namespace App\Services\Tweet;
 
-use App\Models\Image;
 use App\Models\Tweet;
+use App\Services\Image\StoreImage;
 
 class UpdateTweet
 {
@@ -21,13 +21,7 @@ class UpdateTweet
                     ->first()
                     ->updateByFile($imagePath);
             } else {
-                $imageAttributes = [
-                    'image' => file_get_contents($imagePath),
-                    'imageable_id' => $this->tweet->getAttribute('id'),
-                    'imageable_type' => $this->tweet::class
-                ];
-                Image::query()
-                    ->create($imageAttributes);
+                (new StoreImage)($imagePath, $this->tweet);
             }
         }
         $this->tweet->update($attributes);

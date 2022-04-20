@@ -2,8 +2,8 @@
 
 namespace App\Services\User;
 
-use App\Models\Image;
 use App\Models\User;
+use App\Services\Image\StoreImage;
 
 class UpdateUser
 {
@@ -24,13 +24,7 @@ class UpdateUser
                     ->first()
                     ->updateByFile($imagePath);
             } else {
-                $imageAttributes = [
-                    'image' => file_get_contents($imagePath),
-                    'imageable_id' => $this->user->getAttribute('id'),
-                    'imageable_type' => $this->user::class
-                ];
-                Image::query()
-                    ->create($imageAttributes);
+                (new StoreImage)($imagePath, $this->user);
             }
         }
         $this->user->update($attributes);
