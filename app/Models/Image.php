@@ -10,13 +10,31 @@ class Image extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['image', 'imageable_id', 'imageable_type'];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'image',
+        'imageable_id',
+        'imageable_type'
+    ];
 
+    /**
+     * @return MorphTo
+     */
     public function imageable(): MorphTo
     {
         return $this->morphTo();
     }
 
+    /**
+     * Updates an image-model by a file.
+     *
+     * @param string $path
+     * @return bool
+     */
     public function updateByFile(string $path): bool
     {
         return $this->update([

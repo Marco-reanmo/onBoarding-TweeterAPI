@@ -15,6 +15,11 @@ class Tweet extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'uuid',
         'user_id',
@@ -23,11 +28,19 @@ class Tweet extends Model
         'body'
     ];
 
+    /**
+     * @return BelongsTo
+     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Tweet::class)->with('parent');
     }
 
+    /**
+     * Returns all comments including comments of those comments with images and the author's data.
+     *
+     * @return HasMany
+     */
     public function comments(): HasMany
     {
         return $this->hasMany(Tweet::class, 'parent_id')
@@ -39,16 +52,25 @@ class Tweet extends Model
             ]);
     }
 
+    /**
+     * @return MorphOne
+     */
     public function image(): MorphOne
     {
         return $this->morphOne(Image::class, 'imageable');
     }
 
+    /**
+     * @return BelongsTo
+     */
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    /**
+     * @return BelongsToMany
+     */
     public function usersWhoLiked(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'likes', 'tweet_id', 'user_id');
@@ -64,6 +86,13 @@ class Tweet extends Model
         return 'uuid';
     }
 
+    /**
+     * Filters query by forename, surname and body or by author's uuid.
+     *
+     * @param Builder $query
+     * @param array $filters
+     * @return void
+     */
     public function scopeFilter(Builder $query, array $filters) {
         $query->when($filters['search'] ?? false, function($query) use($filters) {
             $search = $filters['search'];
@@ -80,11 +109,23 @@ class Tweet extends Model
         });
     }
 
+    /**
+     * Determines whether a tweet has an image.
+     *
+     * @return bool
+     */
     public function hasImage(): bool
     {
         return $this->image->exists();
     }
 
+    /**
+     * Returns and filters the tweets with images and the referring authors' data on top-level (without comments).
+     *
+     * @param Builder $query
+     * @param array $relevantIds
+     * @return Paginator
+     */
     public function scopeNewsfeedFor(Builder $query, array $relevantIds): Paginator
     {
         return $query->with(['image', 'author.profilePicture'])

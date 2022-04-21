@@ -54,31 +54,49 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * @return MorphOne
+     */
     public function profilePicture(): MorphOne
     {
         return $this->morphOne(Image::class, 'imageable');
     }
 
+    /**
+     * @return BelongsToMany
+     */
     public function followed(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'followed_id');
     }
 
+    /**
+     * @return BelongsToMany
+     */
     public function followers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'followers', 'followed_id', 'follower_id');
     }
 
+    /**
+     * @return HasMany
+     */
     public function tweets(): HasMany
     {
         return $this->hasMany(Tweet::class);
     }
 
+    /**
+     * @return BelongsToMany
+     */
     public function likedTweets(): BelongsToMany
     {
         return $this->belongsToMany(Tweet::class, 'likes', 'user_id', 'tweet_id');
     }
 
+    /**
+     * @return HasOne
+     */
     public function verificationToken(): HasOne
     {
         return $this->hasOne(VerificationToken::class);
@@ -94,6 +112,13 @@ class User extends Authenticatable
         return 'uuid';
     }
 
+    /**
+     * Filters query by forename and surname.
+     *
+     * @param Builder $query
+     * @param array $filters
+     * @return Model|Builder|null
+     */
     public function scopeFilter(Builder $query, array $filters): Model|Builder|null
     {
         return $query->when($filters['search'] ?? false, function(Builder $query) use($filters) {
@@ -105,11 +130,21 @@ class User extends Authenticatable
         });
     }
 
+    /**
+     * Determines whether the User has a profile picture.
+     *
+     * @return bool
+     */
     public function hasProfilePicture() : bool
     {
         return $this->profilePicture()->exists();
     }
 
+    /**
+     * Return Meta-Menu-Links related to the user.
+     *
+     * @return string[]
+     */
     public function getMenuLinks(): array
     {
         return [
@@ -119,16 +154,34 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Returns the user with the given email.
+     *
+     * @param Builder $query
+     * @param string $email
+     * @return Model|Builder|null
+     */
     public function scopeEmail(Builder $query, string $email): Model|Builder|null
     {
         return $query->firstWhere('email', $email);
     }
 
+    /**
+     * Returns the ids of the users that are followed by this user.
+     *
+     * @return Collection
+     */
     public function getFollowedIds(): Collection
     {
         return $this->followed()->pluck('users.id');
     }
 
+    /**
+     * Returns and filters all users except this one.
+     *
+     * @param $search
+     * @return Paginator
+     */
     public function getOtherUsers($search): Paginator
     {
         return $this->with('profilePicture')
@@ -138,6 +191,11 @@ class User extends Authenticatable
             ->withQueryString();
     }
 
+    /**
+     * Returns all ids of followed users plus this user's id.
+     *
+     * @return array
+     */
     public function getNewsfeedIds(): array
     {
         return $this->getFollowedIds()
