@@ -3,15 +3,19 @@
 namespace App\Http\Resources;
 
 use App\Models\Tweet;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin Tweet
+ */
 class TweetResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param  Request $request
+     * @return array
      */
     public function toArray($request)
     {
@@ -38,6 +42,12 @@ class TweetResource extends JsonResource
         ];
     }
 
+    /**
+     * Get any additional data that should be returned with the resource array.
+     *
+     * @param Request $request
+     * @return array
+     */
     public function with($request): array
     {
         return [
