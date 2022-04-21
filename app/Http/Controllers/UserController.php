@@ -18,7 +18,7 @@ class UserController extends Controller
     }
 
     public function index() {
-        $users = auth()->user()->getOtherUsers();
+        $users = auth()->user()->getOtherUsers(request(['search']));
         $usersCollection = UserCollection::make($users);
         return $usersCollection->response()->setStatusCode(Response::HTTP_OK);
     }

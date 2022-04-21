@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -92,10 +94,11 @@ class User extends Authenticatable
         return 'uuid';
     }
 
-    public function scopeFilter($query, array $filters) {
-        $query->when($filters['search'] ?? false, function($query) use($filters) {
+    public function scopeFilter(Builder $query, array $filters): Model|Builder|null
+    {
+        return $query->when($filters['search'] ?? false, function(Builder $query) use($filters) {
             $search = $filters['search'];
-            $query->where(function($query) use($search) {
+            $query->where(function(Builder $query) use($search) {
                 $query->where('forename', 'like', '%' . $search . '%')
                     ->orWhere('surname', 'like', '%' . $search . '%');
             });
@@ -116,9 +119,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function scopeEmail($query, string $email)
+    public function scopeEmail(Builder $query, string $email): Model|Builder|null
     {
-        return $query->firstWhere('email', '=', $email);
+        return $query->firstWhere('email', $email);
     }
 
     public function getFollowedIds(): Collection
@@ -126,11 +129,11 @@ class User extends Authenticatable
         return $this->followed()->pluck('users.id');
     }
 
-    public function getOtherUsers(): Paginator
+    public function getOtherUsers($search): Paginator
     {
         return $this->with('profilePicture')
             ->whereNot('id', $this->getAttribute('id'))
-            ->filter(request(['search']))
+            ->filter($search)
             ->simplePaginate(10)
             ->withQueryString();
     }
