@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('verification_tokens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_ID');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('token');
             $table->timestamps();
         });

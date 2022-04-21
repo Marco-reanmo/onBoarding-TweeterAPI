@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VerificationToken extends Model
 {
@@ -20,8 +20,11 @@ class VerificationToken extends Model
         'token',
     ];
 
-    public function user(): HasOne
+    /**
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class, 'id', 'user_ID');
+        return $this->belongsTo(User::class);
     }
 }
