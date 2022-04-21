@@ -116,7 +116,7 @@ class User extends Authenticatable
         ];
     }
 
-    public static function scopeEmail($query, string $email)
+    public function scopeEmail($query, string $email)
     {
         return $query->firstWhere('email', '=', $email);
     }
