@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
-use LaravelIdea\Helper\App\Models\_IH_User_C;
 
 class User extends Authenticatable
 {
@@ -121,17 +121,24 @@ class User extends Authenticatable
         return $query->firstWhere('email', '=', $email);
     }
 
-    public function getFollowedIds(): array
+    public function getFollowedIds(): Collection
     {
-        return $this->followed()->pluck('users.id')->toArray();
+        return $this->followed()->pluck('users.id');
     }
 
-    public function getOtherUsers(): Paginator|array|_IH_User_C
+    public function getOtherUsers(): Paginator
     {
-        return self::with('profilePicture')
+        return $this->with('profilePicture')
             ->whereNot('id', $this->getAttribute('id'))
             ->filter(request(['search']))
             ->simplePaginate(10)
             ->withQueryString();
+    }
+
+    public function getNewsfeedIds(): array
+    {
+        return $this->getFollowedIds()
+            ->merge($this->getAttribute('id'))
+            ->toArray();
     }
 }

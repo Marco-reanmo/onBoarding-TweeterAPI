@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Pagination\Paginator;
-use LaravelIdea\Helper\App\Models\_IH_Tweet_C;
 
 class Tweet extends Model
 {
@@ -65,7 +64,7 @@ class Tweet extends Model
         return 'uuid';
     }
 
-    public function scopeFilter($query, array $filters) {
+    public function scopeFilter(Builder $query, array $filters) {
         $query->when($filters['search'] ?? false, function($query) use($filters) {
             $search = $filters['search'];
             $query->whereHas('author', function(Builder $query) use($search) {
@@ -86,21 +85,14 @@ class Tweet extends Model
         return $this->image->exists();
     }
 
-    public static function getByIds(array $ids): Paginator|array|_IH_Tweet_C
+    public function scopeNewsfeedFor(Builder $query, array $relevantIds): Paginator
     {
-        return self::with(['image', 'author.profilePicture'])
-            ->whereIn('user_id', $ids)
-            ->where('parent_id', '=', null)
+        return $query->with(['image', 'author.profilePicture'])
+            ->whereIn('user_id', $relevantIds)
+            ->whereDoesntHave('parent')
             ->filter(request(['search', 'user']))
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->simplePaginate(10)
             ->withQueryString();
-    }
-
-    public static function getNewsfeedFor(User $user): Paginator|array|_IH_Tweet_C
-    {
-        $relevantIds = $user->getFollowedIds();
-        $relevantIds[] = $user->getAttribute('id');
-        return self::getByIds($relevantIds);
     }
 }

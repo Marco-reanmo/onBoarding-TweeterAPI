@@ -21,7 +21,8 @@ class TweetController extends Controller
 
     public function index()
     {
-        $tweets = Tweet::getNewsfeedFor(auth()->user())
+        $tweets = Tweet::query()
+            ->newsfeedFor(auth()->user()->getNewsfeedIds())
             ->loadCount([
                 'comments',
                 'usersWhoLiked'
