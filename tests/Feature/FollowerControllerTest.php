@@ -66,4 +66,10 @@ class FollowerControllerTest extends TestCase
             ->postJson('api/users/' . $this->nonExistingUuid . '/toggle-follow')
             ->assertJsonStructure(['message']);
     }
+
+    public function testUnauthorizedUserCannotFollowUser()
+    {
+        $this->postJson('api/users/' . $this->follower->getAttribute('uuid') . '/toggle-follow')
+            ->assertUnauthorized();
+    }
 }

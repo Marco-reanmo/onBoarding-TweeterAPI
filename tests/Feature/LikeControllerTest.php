@@ -147,4 +147,16 @@ class LikeControllerTest extends TestCase
             ->assertNotFound()
             ->assertJsonStructure(['message']);
     }
+
+    public function testUnauthenticatedUserCannotGetUsersWhoLikedTweet()
+    {
+        $this->getJson('api/tweets/' . $this->currentTweet->getAttribute('uuid') . '/likes')
+            ->assertUnauthorized();
+    }
+
+    public function testUnauthenticatedUserCannotLikeTweet()
+    {
+        $this->postJson('api/tweets/' . $this->currentTweet->getAttribute('uuid') . '/likes')
+            ->assertUnauthorized();
+    }
 }
