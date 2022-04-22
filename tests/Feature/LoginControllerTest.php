@@ -33,7 +33,7 @@ class LoginControllerTest extends TestCase
     {
         $this->postJson('api/login', $this->payload)
             ->assertOk();
-        $this->assertTrue(auth()->user()->is($this->user));
+        $this->assertAuthenticatedAs($this->user);
     }
 
     public function testSuccessfulLoginReturnsUserModel()
@@ -51,7 +51,7 @@ class LoginControllerTest extends TestCase
             'password' => $this->password
             ]
         )->assertForbidden();
-        $this->assertNull(auth()->user());
+        $this->assertGuest();
     }
 
     public function testMissingEmailCredentialReturnsException()
@@ -66,7 +66,7 @@ class LoginControllerTest extends TestCase
                     ]
                 ]
             ]);
-        $this->assertNull(auth()->user());
+        $this->assertGuest();
     }
 
     public function testEmailCredentialThatIsNotAnEmailReturnsException()
@@ -84,7 +84,7 @@ class LoginControllerTest extends TestCase
                     ]
                 ]
             ]);
-        $this->assertNull(auth()->user());
+        $this->assertGuest();
     }
 
     public function testWrongPasswordReturnsForbidden()
@@ -94,7 +94,7 @@ class LoginControllerTest extends TestCase
                 'password' => 'invalid'
             ]
         )->assertForbidden();
-        $this->assertNull(auth()->user());
+        $this->assertGuest();
     }
 
     public function testMissingPasswordCredentialReturnsException()
@@ -111,7 +111,7 @@ class LoginControllerTest extends TestCase
                     ]
                 ]
             ]);
-        $this->assertNull(auth()->user());
+        $this->assertGuest();
     }
 
     public function testValidationStopsOnFirstError()
@@ -126,7 +126,7 @@ class LoginControllerTest extends TestCase
                     ]
                 ]
             ]);
-        $this->assertNull(auth()->user());
+        $this->assertGuest();
     }
 
     public function testAlreadyAuthenticatedUserCannotLoginTwiceAndWillBeRedirectedToHome()
