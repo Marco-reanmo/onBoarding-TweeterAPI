@@ -18,9 +18,13 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         Tweet::factory(10)
-            ->has(User::factory(2), 'usersWhoLiked')
-            ->has(Tweet::factory(2), 'comments')
+            ->has(Image::factory(), 'image')
+            ->has(User::factory()
+                ->has(User::factory(), 'followers'
+                ), 'usersWhoLiked')
+            ->has(Tweet::factory()
+                ->has(Tweet::factory(), 'comments')
+                , 'comments')
             ->create();
-        Image::factory(5)->create();
     }
 }

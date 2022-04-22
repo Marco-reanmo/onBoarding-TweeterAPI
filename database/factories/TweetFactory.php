@@ -20,7 +20,7 @@ class TweetFactory extends Factory
     {
         return [
             'uuid' => $this->faker->uuid(),
-            'user_id' => User::factory()->has(User::factory()->count(3), 'followers'),
+            'user_id' => User::factory()->has(Image::factory(), 'profilePicture'),
             'parent_id' => null,
             'body' => $this->faker->text()
         ];
