@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class FollowerControllerTest extends TestCase
@@ -33,8 +32,8 @@ class FollowerControllerTest extends TestCase
     public function testFollowerEntryIsCreatedSuccessfully()
     {
         $this->actingAs($this->follower)
-            ->json('post', 'api/users/' . $this->followed->getAttribute('uuid') . '/toggle-follow')
-            ->assertStatus(Response::HTTP_OK);
+            ->postJson('api/users/' . $this->followed->getAttribute('uuid') . '/toggle-follow')
+            ->assertOk();
         $this->assertDatabaseHas('followers', $this->payload);
     }
 
@@ -42,30 +41,29 @@ class FollowerControllerTest extends TestCase
     {
         $this->follower->followed()->toggle($this->followed);
         $this->actingAs($this->follower)
-            ->json('post', 'api/users/' . $this->followed->getAttribute('uuid') . '/toggle-follow')
-            ->assertStatus(Response::HTTP_OK);
+            ->postJson('api/users/' . $this->followed->getAttribute('uuid') . '/toggle-follow')
+            ->assertOk();
         $this->assertDatabaseMissing('followers', $this->payload);
     }
 
     public function testFollowerCannotFollowHimself()
     {
         $this->actingAs($this->follower)
-            ->json('post', 'api/users/' . $this->follower->getAttribute('uuid') . '/toggle-follow')
-            ->assertStatus(Response::HTTP_FORBIDDEN);
+            ->postJson('api/users/' . $this->follower->getAttribute('uuid') . '/toggle-follow')
+            ->assertForbidden();
     }
 
     public function testMissingUuidReturnsNotFound()
     {
         $this->actingAs($this->follower)
-            ->json('post', 'api/users/' . $this->nonExistingUuid . '/toggle-follow')
-            ->assertStatus(Response::HTTP_NOT_FOUND);
+            ->postJson('api/users/' . $this->nonExistingUuid . '/toggle-follow')
+            ->assertNotFound();
     }
 
     public function testMissingUuidReturnsError()
     {
-
         $this->actingAs($this->follower)
-            ->json('post', 'api/users/' . $this->nonExistingUuid . '/toggle-follow')
+            ->postJson('api/users/' . $this->nonExistingUuid . '/toggle-follow')
             ->assertJsonStructure(['message']);
     }
 }
