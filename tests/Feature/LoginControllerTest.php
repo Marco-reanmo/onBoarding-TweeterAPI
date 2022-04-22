@@ -13,7 +13,6 @@ class LoginControllerTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
-    private string $email;
     private string $password;
     private array $payload;
 
@@ -21,10 +20,9 @@ class LoginControllerTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
-        $this->email = $this->user->email;
         $this->password = 'password';
         $this->payload = [
-          'email' => $this->email,
+          'email' => $this->user->email,
           'password' => $this->password
         ];
     }
