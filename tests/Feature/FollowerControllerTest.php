@@ -10,6 +10,8 @@ use Tests\TestCase;
 
 class FollowerControllerTest extends TestCase
 {
+    use RefreshDatabase;
+
     private User $follower;
     private User $followed;
     private array $payload;
