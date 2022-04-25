@@ -11,7 +11,6 @@ class FollowerControllerTest extends TestCase
     private User $follower;
     private User $followed;
     private array $payload;
-    private string $nonExistingUuid;
 
     public function setUp(): void
     {
@@ -23,7 +22,6 @@ class FollowerControllerTest extends TestCase
             'follower_id' => $this->follower->id,
             'followed_id' => $this->followed->id,
         ];
-        $this->nonExistingUuid = '0';
     }
 
     public function testFollowerEntryIsCreatedSuccessfully()
@@ -53,14 +51,25 @@ class FollowerControllerTest extends TestCase
     public function testMissingUuidReturnsNotFound()
     {
         $this->actingAs($this->follower)
-            ->postJson('api/users/' . $this->nonExistingUuid . '/toggle-follow')
+            ->postJson('api/users/' . $this->fakeMissingUuid() . '/toggle-follow')
             ->assertNotFound();
+    }
+
+    private function fakeMissingUuid(): string
+    {
+        $uuid = $this->faker->uuid();
+        return $this->isMissingUuid($uuid) ? $uuid : $this->fakeMissingUuid();
+    }
+
+    private function isMissingUuid(string $uuid): bool
+    {
+        return !(($uuid == $this->follower->uuid) || ($uuid == $this->followed->uuid));
     }
 
     public function testMissingUuidReturnsError()
     {
         $this->actingAs($this->follower)
-            ->postJson('api/users/' . $this->nonExistingUuid . '/toggle-follow')
+            ->postJson('api/users/' . $this->fakeMissingUuid() . '/toggle-follow')
             ->assertJsonStructure(['message']);
     }
 

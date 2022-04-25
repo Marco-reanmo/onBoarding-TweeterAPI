@@ -14,7 +14,6 @@ class LikeControllerTest extends TestCase
     private Tweet $currentTweet;
     private User $otherUser;
     private Tweet $otherTweet;
-    private string $missingUuid;
 
     public function setUp(): void
     {
@@ -24,7 +23,6 @@ class LikeControllerTest extends TestCase
         $this->otherTweet = $tweets->last();
         $this->currentUser = $this->currentTweet->author;
         $this->otherUser = $this->otherTweet->author;
-        $this->missingUuid = '0';
     }
 
     public function testGetLikesReturnsInstanceOfUserCollection()
@@ -80,14 +78,25 @@ class LikeControllerTest extends TestCase
     public function testShowMissingTweetReturnsNotFound()
     {
         $this->actingAs($this->currentUser)
-            ->getJson('api/tweets/' . $this->missingUuid . '/likes')
+            ->getJson('api/tweets/' . $this->fakeMissingUuid() . '/likes')
             ->assertNotFound();
+    }
+
+    private function fakeMissingUuid(): string
+    {
+        $uuid = $this->faker->uuid();
+        return $this->isMissingUuid($uuid) ? $uuid : $this->fakeMissingUuid();
+    }
+
+    private function isMissingUuid(string $uuid): bool
+    {
+        return !(($uuid == $this->currentTweet->uuid) || ($uuid == $this->otherTweet->uuid));
     }
 
     public function testShowMissingTweetReturnsError()
     {
         $this->actingAs($this->currentUser)
-            ->getJson('api/tweets/' . $this->missingUuid . '/likes')
+            ->getJson('api/tweets/' . $this->fakeMissingUuid() . '/likes')
             ->assertJsonStructure(['message']);
     }
 
@@ -140,7 +149,7 @@ class LikeControllerTest extends TestCase
     public function testUserCannotLikeMissingTweet()
     {
         $this->actingAs($this->currentUser)
-            ->postJson('api/tweets/' . $this->missingUuid . '/likes')
+            ->postJson('api/tweets/' . $this->fakeMissingUuid() . '/likes')
             ->assertNotFound()
             ->assertJsonStructure(['message']);
     }

@@ -30,7 +30,7 @@ class RecoveryControllerTest extends TestCase
     {
         Mail::fake();
         $this->putJson('api/reset-pwd', [
-            'email' => 'invalid@example.com'
+            'email' => $this->faker->email()
         ])->assertUnprocessable()
             ->assertExactJson([
                 "message" => "The selected email is invalid.",
