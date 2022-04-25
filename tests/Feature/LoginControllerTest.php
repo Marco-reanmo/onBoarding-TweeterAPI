@@ -94,7 +94,7 @@ class LoginControllerTest extends TestCase
 
     private function fakeWrongPassword(): string
     {
-        $wrongPassword = $this->faker->password(8, 255);
+        $wrongPassword = $this->faker->password(8, 64);
         return $wrongPassword == 'password' ? $this->fakeWrongPassword() : $wrongPassword;
     }
 
