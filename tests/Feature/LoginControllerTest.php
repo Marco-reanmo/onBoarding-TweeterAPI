@@ -4,19 +4,16 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class LoginControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $user;
     private string $password;
     private array $payload;
 
-    protected function setUp(): void
+    public function setUp(): void
     {
         parent::setUp();
         $this->user = User::factory()->create();
@@ -45,7 +42,7 @@ class LoginControllerTest extends TestCase
     public function testUnregisteredEmailReturnsForbidden()
     {
         $this->postJson('api/login', [
-            'email' => 'invalid@example.com',
+            'email' => $this->faker->email(),
             'password' => $this->password
             ]
         )->assertForbidden();
@@ -89,10 +86,16 @@ class LoginControllerTest extends TestCase
     {
         $this->postJson('api/login', [
                 'email' => $this->user->email,
-                'password' => 'invalid'
+                'password' => $this->fakeWrongPassword()
             ]
         )->assertForbidden();
         $this->assertGuest();
+    }
+
+    private function fakeWrongPassword(): string
+    {
+        $wrongPassword = $this->faker->password(8, 255);
+        return $wrongPassword == 'password' ? $this->fakeWrongPassword() : $wrongPassword;
     }
 
     public function testMissingPasswordCredentialReturnsException()

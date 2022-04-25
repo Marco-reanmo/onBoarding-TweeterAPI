@@ -5,21 +5,18 @@ namespace Tests\Feature;
 use App\Models\Tweet;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class LikeControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $currentUser;
     private Tweet $currentTweet;
     private User $otherUser;
     private Tweet $otherTweet;
     private string $missingUuid;
 
-    protected function setUp(): void
+    public function setUp(): void
     {
         parent::setUp();
         $tweets = Tweet::factory(2)->create();

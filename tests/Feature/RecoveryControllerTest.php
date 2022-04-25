@@ -4,15 +4,12 @@ namespace Tests\Feature;
 
 use App\Mail\RecoveryMail;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class RecoveryControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testMissingEmailCredentialReturnsError()
     {
         Mail::fake();

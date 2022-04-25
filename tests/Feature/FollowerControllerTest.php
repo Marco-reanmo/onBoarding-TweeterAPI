@@ -3,20 +3,17 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class FollowerControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     private User $follower;
     private User $followed;
     private array $payload;
     private string $nonExistingUuid;
 
-    protected function setUp(): void
+    public function setUp(): void
     {
         parent::setUp();
         $users = User::factory(2)->create();
