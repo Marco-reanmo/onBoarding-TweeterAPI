@@ -42,7 +42,7 @@ class RecoveryControllerTest extends TestCase
                         "The selected email is invalid."
                     ]
                 ]
-            ]);;
+            ]);
         Mail::assertNothingSent();
     }
 
