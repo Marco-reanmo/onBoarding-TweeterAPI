@@ -26,8 +26,8 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'forename' => ['required', 'min:3', 'max:255', 'alpha'],
-            'surname' => ['required', 'min:3', 'max:255', 'alpha'],
+            'forename' => ['required', 'max:255', 'alpha'],
+            'surname' => ['required', 'max:255', 'alpha'],
             'profile_picture' => ['image'],
             'email' => ['required', 'max:255', 'email', Rule::unique('users', 'email')],
             'password' => ['required', 'confirmed', Password::defaults()],
