@@ -46,6 +46,7 @@ class FollowerControllerTest extends TestCase
         $this->actingAs($this->follower)
             ->postJson('api/users/' . $this->follower->getAttribute('uuid') . '/toggle-follow')
             ->assertForbidden();
+        $this->assertDatabaseCount('followers', 0);
     }
 
     public function testMissingUuidReturnsNotFound()
@@ -53,6 +54,7 @@ class FollowerControllerTest extends TestCase
         $this->actingAs($this->follower)
             ->postJson('api/users/' . $this->fakeMissingUuid() . '/toggle-follow')
             ->assertNotFound();
+        $this->assertDatabaseCount('followers', 0);
     }
 
     private function fakeMissingUuid(): string
@@ -71,11 +73,13 @@ class FollowerControllerTest extends TestCase
         $this->actingAs($this->follower)
             ->postJson('api/users/' . $this->fakeMissingUuid() . '/toggle-follow')
             ->assertJsonStructure(['message']);
+        $this->assertDatabaseCount('followers', 0);
     }
 
     public function testUnauthorizedUserCannotFollowUser()
     {
         $this->postJson('api/users/' . $this->follower->getAttribute('uuid') . '/toggle-follow')
             ->assertUnauthorized();
+        $this->assertDatabaseCount('followers', 0);
     }
 }
