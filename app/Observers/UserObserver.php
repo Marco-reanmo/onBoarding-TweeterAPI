@@ -15,9 +15,7 @@ class UserObserver
      */
     public function created(User $user)
     {
-        if(config('app.debug') === false) {
-            (new SendTokenViaMail)($user);
-        }
+        (new SendTokenViaMail)($user);
     }
 
     /**

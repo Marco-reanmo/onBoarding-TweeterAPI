@@ -17,14 +17,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Tweet::factory(10)
-            ->has(Image::factory(), 'image')
-            ->has(User::factory()
-                ->has(User::factory(), 'followers'
-                ), 'usersWhoLiked')
-            ->has(Tweet::factory()
-                ->has(Tweet::factory(), 'comments')
-                , 'comments')
-            ->create();
+        User::withoutEvents(function () {
+            Tweet::factory(10)
+                ->has(Image::factory(), 'image')
+                ->has(User::factory()
+                    ->has(User::factory(), 'followers'
+                    ), 'usersWhoLiked')
+                ->has(Tweet::factory()
+                    ->has(Tweet::factory(), 'comments')
+                    , 'comments')
+                ->create();
+        });
     }
 }
