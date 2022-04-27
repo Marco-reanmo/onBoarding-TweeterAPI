@@ -431,7 +431,7 @@ class RegisterControllerTest extends TestCase
         Queue::assertPushed(SendVerificationEmail::class);
     }
 
-    public function testAuthenticateUserIsRedirected()
+    public function testAuthenticatedUserIsRedirected()
     {
         $user = User::factory()->create();
         $this->actingAs($user)
