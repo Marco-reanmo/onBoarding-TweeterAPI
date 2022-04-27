@@ -15,30 +15,27 @@ use Tests\TestCase;
 
 class RegisterControllerTest extends TestCase
 {
+    const selectedSymbols = [
+        ',', ';', ':', '_', '#', '+', '*', '~', '´', '`', '?', '\\', '/', '=',
+        '[', '(', '{', '}', ')', ']', '&', '%', '$', '§', '"', '!', '°', '^', '<', '>', '|'
+    ];
+    const letters = [
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+        'ß'
+    ];
+
     private array $payload;
-
-    private array $selectedSymbols;
-
     private Closure $passwordValidator;
-    private array $letters;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->selectedSymbols = [
-            ',',';',':','_','#','+','*','~','´','`','?','\\','/','=',
-            '[','(','{','}',')',']','&','%', '$','§','"','!','°','^','<','>','|'
-        ];
-        $this->letters = [
-            'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-            'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-            'ß'
-            ];
-        $this->passwordValidator = function($password) {
+        $this->passwordValidator = function ($password) {
             return ($this->hasCorrectLength($password) &&
-                    Str::contains($password, $this->letters) &&
-                    Str::contains($password, range(0,9)) &&
-                    Str::contains($password, $this->selectedSymbols));
+                Str::contains($password, self::letters) &&
+                Str::contains($password, range(0, 9)) &&
+                Str::contains($password, self::selectedSymbols));
         };
         $password = $this->faker->valid($this->passwordValidator)->password();
         $this->payload = User::factory()
@@ -52,7 +49,7 @@ class RegisterControllerTest extends TestCase
         unset($this->payload['remember_token']);
     }
 
-    private function hasCorrectLength($password, $min=8, $max=64): bool
+    private function hasCorrectLength($password, $min = 8, $max = 64): bool
     {
         return in_array(Str::length($password), range($min, $max));
     }
@@ -107,7 +104,7 @@ class RegisterControllerTest extends TestCase
 
     public function testForenameWithSymbolReturnsError()
     {
-        $this->payload['forename'] .= $this->faker->randomElement($this->selectedSymbols);
+        $this->payload['forename'] .= $this->faker->randomElement(self::selectedSymbols);
         $this->postJson('api/register', $this->payload)
             ->assertUnprocessable()
             ->assertExactJson([
@@ -171,7 +168,7 @@ class RegisterControllerTest extends TestCase
 
     public function testSurnameWithSymbolReturnsError()
     {
-        $this->payload['surname'] .= $this->faker->randomElement($this->selectedSymbols);
+        $this->payload['surname'] .= $this->faker->randomElement(self::selectedSymbols);
         $this->postJson('api/register', $this->payload)
             ->assertUnprocessable()
             ->assertExactJson([
@@ -329,8 +326,9 @@ class RegisterControllerTest extends TestCase
     {
         $customValidator = function ($password) {
             return ($this->hasCorrectLength($password, 1, 7) &&
-                    Str::contains($password, range(0, 9)) &&
-                    Str::contains($password, $this->selectedSymbols));
+                Str::contains($password, self::letters) &&
+                Str::contains($password, range(0, 9)) &&
+                Str::contains($password, self::selectedSymbols));
         };
         $tooShortPassword = $this->faker->valid($customValidator)->password();
         $this->payload['password'] = $tooShortPassword;
@@ -353,7 +351,7 @@ class RegisterControllerTest extends TestCase
         $customValidator = function ($password) {
             return ($this->hasCorrectLength($password, 65, 128) &&
                 Str::contains($password, range(0, 9)) &&
-                Str::contains($password, $this->selectedSymbols));
+                Str::contains($password, self::selectedSymbols));
         };
         $tooLongPassword = $this->faker->valid($customValidator)->password(65);
         $this->payload['password'] = $tooLongPassword;
@@ -374,7 +372,7 @@ class RegisterControllerTest extends TestCase
     public function testPasswordThatDoesNotContainLetterReturnsError()
     {
         $passwordWithoutLetters = $this->faker->numberBetween(1000000, 9999999)
-            . $this->faker->randomElement($this->selectedSymbols);
+            . $this->faker->randomElement(self::selectedSymbols);
         $this->payload['password'] = $passwordWithoutLetters;
         $this->payload['password_confirmation'] = $passwordWithoutLetters;
         $this->postJson('api/register', $this->payload)
@@ -393,7 +391,7 @@ class RegisterControllerTest extends TestCase
     public function testPasswordThatDoesNotContainNumberReturnsError()
     {
         $passwordWithoutNumber = Str::repeat($this->faker->randomLetter(), 7)
-            . $this->faker->randomElement($this->selectedSymbols);
+            . $this->faker->randomElement(self::selectedSymbols);
         $this->payload['password'] = $passwordWithoutNumber;
         $this->payload['password_confirmation'] = $passwordWithoutNumber;
         $this->postJson('api/register', $this->payload)
@@ -464,7 +462,7 @@ class RegisterControllerTest extends TestCase
     {
         $this->postJson('api/register', $this->payload)
             ->assertCreated();
-        $this->assertDatabaseHas('users',[
+        $this->assertDatabaseHas('users', [
             'forename' => $this->payload['forename'],
             'surname' => $this->payload['surname'],
             'email' => $this->payload['email'],
