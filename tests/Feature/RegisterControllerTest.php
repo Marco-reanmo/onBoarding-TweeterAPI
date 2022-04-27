@@ -113,7 +113,7 @@ class RegisterControllerTest extends TestCase
     /**
      * @dataProvider names
      */
-    public function testForenameWithNumberReturnsError($nameCredential)
+    public function testNameWithNumberReturnsError($nameCredential)
     {
         $this->payload[$nameCredential] .= $this->faker->randomDigit();
         $this->postJson('api/register', $this->payload)
