@@ -83,96 +83,65 @@ class RegisterControllerTest extends TestCase
         );
     }
 
-    public function testForenameThatIsTooLongReturnsError()
+    /**
+     * @dataProvider names
+     */
+    public function testNameThatIsTooLongReturnsError(string $nameCredential)
     {
-        $this->payload['forename'] = Str::repeat($this->faker->randomLetter(), 256);
+        $this->payload[$nameCredential] = Str::repeat($this->faker->randomLetter(), 256);
         $this->postJson('api/register', $this->payload)
             ->assertUnprocessable()
             ->assertExactJson([
-                "message" => "The forename must not be greater than 255 characters.",
+                "message" => "The " . $nameCredential . " must not be greater than 255 characters.",
                 "errors" => [
-                    "forename" => [
-                        "The forename must not be greater than 255 characters."
+                    $nameCredential => [
+                        "The " . $nameCredential . " must not be greater than 255 characters."
                     ]
                 ]
             ]);
         $this->assertDatabaseCount('users', 0);
     }
 
-    public function testForenameWithNumberReturnsError()
+    public function names()
     {
-        $this->payload['forename'] .= $this->faker->randomDigit();
+        return array(
+            ['forename'],
+            ['surname']
+        );
+    }
+
+    /**
+     * @dataProvider names
+     */
+    public function testForenameWithNumberReturnsError($nameCredential)
+    {
+        $this->payload[$nameCredential] .= $this->faker->randomDigit();
         $this->postJson('api/register', $this->payload)
             ->assertUnprocessable()
             ->assertExactJson([
-                "message" => "The forename must only contain letters, dots, hyphens or apostrophes.",
+                "message" => "The " . $nameCredential . " must only contain letters, dots, hyphens or apostrophes.",
                 "errors" => [
-                    "forename" => [
-                        "The forename must only contain letters, dots, hyphens or apostrophes."
+                    $nameCredential => [
+                        "The " . $nameCredential . " must only contain letters, dots, hyphens or apostrophes."
                     ]
                 ]
             ]);
         $this->assertDatabaseCount('users', 0);
     }
 
-    public function testForenameWithSymbolReturnsError()
+    /**
+     * @dataProvider names
+     */
+    public function testNameWithSymbolReturnsError(string $nameCredential)
     {
-        $this->payload['forename'] .= $this->faker->randomElement(self::selectedSymbols);
+        $this->payload[$nameCredential] .= $this->faker->randomElement(self::selectedSymbols);
         $this->postJson('api/register', $this->payload)
             ->assertUnprocessable()
             ->assertExactJson([
-                "message" => "The forename must only contain letters, dots, hyphens or apostrophes.",
+                "message" => "The " . $nameCredential . " must only contain letters, dots, hyphens or apostrophes.",
                 "errors" => [
-                    "forename" => [
-                        "The forename must only contain letters, dots, hyphens or apostrophes."
-                    ]
-                ]
-            ]);
-        $this->assertDatabaseCount('users', 0);
-    }
-
-    public function testSurnameThatIsTooLongReturnsError()
-    {
-        $this->payload['surname'] = Str::repeat($this->faker->randomLetter(), 256);
-        $this->postJson('api/register', $this->payload)
-            ->assertUnprocessable()
-            ->assertExactJson([
-                "message" => "The surname must not be greater than 255 characters.",
-                "errors" => [
-                    "surname" => [
-                        "The surname must not be greater than 255 characters."
-                    ]
-                ]
-            ]);
-        $this->assertDatabaseCount('users', 0);
-    }
-
-    public function testSurnameWithNumberReturnsError()
-    {
-        $this->payload['surname'] .= $this->faker->randomDigit();
-        $this->postJson('api/register', $this->payload)
-            ->assertUnprocessable()
-            ->assertExactJson([
-                "message" => "The surname must only contain letters, dots, hyphens or apostrophes.",
-                "errors" => [
-                    "surname" => [
-                        "The surname must only contain letters, dots, hyphens or apostrophes."
-                    ]
-                ]
-            ]);
-        $this->assertDatabaseCount('users', 0);
-    }
-
-    public function testSurnameWithSymbolReturnsError()
-    {
-        $this->payload['surname'] .= $this->faker->randomElement(self::selectedSymbols);
-        $this->postJson('api/register', $this->payload)
-            ->assertUnprocessable()
-            ->assertExactJson([
-                "message" => "The surname must only contain letters, dots, hyphens or apostrophes.",
-                "errors" => [
-                    "surname" => [
-                        "The surname must only contain letters, dots, hyphens or apostrophes."
+                    $nameCredential => [
+                        "The " . $nameCredential . " must only contain letters, dots, hyphens or apostrophes."
                     ]
                 ]
             ]);
