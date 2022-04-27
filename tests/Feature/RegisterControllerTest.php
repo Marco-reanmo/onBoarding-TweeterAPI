@@ -102,7 +102,7 @@ class RegisterControllerTest extends TestCase
         $this->assertDatabaseCount('users', 0);
     }
 
-    public function names()
+    public function names(): array
     {
         return array(
             ['forename'],
