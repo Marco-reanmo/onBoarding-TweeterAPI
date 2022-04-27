@@ -54,20 +54,33 @@ class RegisterControllerTest extends TestCase
         return in_array(Str::length($password), range($min, $max));
     }
 
-    public function testMissingForenameReturnsError()
+    /**
+     * @dataProvider credentialProvider
+     */
+    public function testMissingCredentialReturnsError(string $credential)
     {
-        unset($this->payload['forename']);
+        unset($this->payload[$credential]);
         $this->postJson('api/register', $this->payload)
             ->assertUnprocessable()
             ->assertExactJson([
-                "message" => "The forename field is required.",
+                "message" => "The " . $credential . " field is required.",
                 "errors" => [
-                    "forename" => [
-                        "The forename field is required."
+                    $credential => [
+                        "The " . $credential . " field is required."
                     ]
                 ]
             ]);
         $this->assertDatabaseCount('users', 0);
+    }
+
+    public function credentialProvider(): array
+    {
+        return array(
+            ['forename'],
+            ['surname'],
+            ['email'],
+            ['password']
+        );
     }
 
     public function testForenameThatIsTooLongReturnsError()
@@ -112,22 +125,6 @@ class RegisterControllerTest extends TestCase
                 "errors" => [
                     "forename" => [
                         "The forename must only contain letters, dots, hyphens or apostrophes."
-                    ]
-                ]
-            ]);
-        $this->assertDatabaseCount('users', 0);
-    }
-
-    public function testMissingSurnameReturnsError()
-    {
-        unset($this->payload['surname']);
-        $this->postJson('api/register', $this->payload)
-            ->assertUnprocessable()
-            ->assertExactJson([
-                "message" => "The surname field is required.",
-                "errors" => [
-                    "surname" => [
-                        "The surname field is required."
                     ]
                 ]
             ]);
@@ -208,22 +205,6 @@ class RegisterControllerTest extends TestCase
         $this->assertDatabaseCount('users', 0);
     }
 
-    public function testMissingEmailReturnsError()
-    {
-        unset($this->payload['email']);
-        $this->postJson('api/register', $this->payload)
-            ->assertUnprocessable()
-            ->assertExactJson([
-                "message" => "The email field is required.",
-                "errors" => [
-                    "email" => [
-                        "The email field is required."
-                    ]
-                ]
-            ]);
-        $this->assertDatabaseCount('users', 0);
-    }
-
     public function testEmailThatIsTooLongReturnsError()
     {
         $suffix = '@example.com';
@@ -272,22 +253,6 @@ class RegisterControllerTest extends TestCase
                 ]
             ]);
         $this->assertDatabaseCount('users', 1);
-    }
-
-    public function testMissingPasswordReturnsError()
-    {
-        unset($this->payload['password']);
-        $this->postJson('api/register', $this->payload)
-            ->assertUnprocessable()
-            ->assertExactJson([
-                "message" => "The password field is required.",
-                "errors" => [
-                    "password" => [
-                        "The password field is required."
-                    ]
-                ]
-            ]);
-        $this->assertDatabaseCount('users', 0);
     }
 
     public function testMissingConformationReturnsError()
@@ -504,4 +469,5 @@ class RegisterControllerTest extends TestCase
             ->postJson('api/register', $this->payload)
             ->assertRedirect('/home');
     }
+
 }
